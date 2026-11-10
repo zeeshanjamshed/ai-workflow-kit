@@ -73,7 +73,7 @@ function runGit(root: string, args: string[], input?: string) {
   });
 }
 
-function git(root: string, args: string[], input?: string): string | undefined {
+export function git(root: string, args: string[], input?: string): string | undefined {
   const result = runGit(root, args, input);
   return result.status === 0 ? result.stdout.trimEnd() : undefined;
 }

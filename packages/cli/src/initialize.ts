@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { closeSync, linkSync, lstatSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
+import { closeSync, linkSync, lstatSync, mkdirSync, openSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
@@ -8,9 +8,10 @@ import type { Project } from './discovery.ts';
 import { adapterInstructions, permissions as currentPermissions, projectIndex } from './instructions.ts';
 
 const owner = 'ai-workflow-kit';
-const version = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8')).version as string;
+export const version = '0.3.0';
+export const bundledVersions = ['0.1.0', '0.2.0', version];
 const statePath = '.ai/.init-plan.json';
-const manifestPath = '.ai/setup-manifest.json';
+export const manifestPath = '.ai/setup-manifest.json';
 const ignorePath = '.ai/.gitignore';
 const policies = ['tracked', 'local-only', 'mixed'] as const;
 type Policy = typeof policies[number];
@@ -23,9 +24,10 @@ type State = Choices & { owner: string; version: string; create: string[]; prese
 const rules = 'Read-only inspection may proceed. Explain the scope and risks and get explicit approval before writes or external changes. Approve each step by default. Preserve existing work, verify changes, and report results briefly.';
 const permissions = `# Project permissions\n\n${rules}\n\nFor known breaking changes, explain the impact, alternatives, and recovery. Obtain three distinct explicit confirmations. Use native safeguards for risky actions.\n`;
 
-function templates(choices: Choices & { version?: string }): Entry[] {
+export function templates(choices: Choices & { version?: string }): Entry[] {
   const legacy = choices.version === '0.1.0';
   const templateVersion = choices.version ?? version;
+  const indexContents = templateVersion === '0.3.0' ? projectIndex + '\nPreview kit updates with `ai-setup update --dry-run`.\n' : projectIndex;
   const result: Entry[] = [];
   if (choices.policy !== 'tracked') {
     result.push({ path: ignorePath, content: choices.policy === 'local-only'
@@ -33,7 +35,7 @@ function templates(choices: Choices & { version?: string }): Entry[] {
       : '/knowledge/\n/decisions/\n/tasks/\n' });
   }
   result.push(
-    { path: '.ai/README.md', content: legacy ? '# Project context\n\nAdd verified project context as it becomes useful. Start with [project permissions](rules/permissions.md) and preserve existing project instructions.\n' : projectIndex },
+    { path: '.ai/README.md', content: legacy ? '# Project context\n\nAdd verified project context as it becomes useful. Start with [project permissions](rules/permissions.md) and preserve existing project instructions.\n' : indexContents },
     { path: '.ai/rules/permissions.md', content: legacy ? permissions : currentPermissions },
     { path: '.ai/config.yaml', content: `version: "${templateVersion}"\ntracking: ${choices.policy}\nadapters: [${choices.agents.join(', ')}]\n` },
   );
@@ -50,12 +52,13 @@ function json(value: unknown): string {
   return JSON.stringify(value, null, 2) + '\n';
 }
 
-function sha(content: string): string {
+export function sha(content: string): string {
   return createHash('sha256').update(content).digest('hex');
 }
 
-function safePath(root: string, path: string, createParents = false): string {
+export function safePath(root: string, path: string, createParents = false): string {
   const parts = path.split('/');
+  if (parts.some(part => !/^[a-zA-Z0-9_.-]+$/.test(part) || part === '.' || part === '..')) throw new Error('Invalid managed path.');
   let current = root;
   for (const part of parts.slice(0, -1)) {
     current = join(current, part);
@@ -72,7 +75,7 @@ function safePath(root: string, path: string, createParents = false): string {
 }
 
 // Publish a complete file atomically. A concurrent creator wins without being overwritten.
-function install(root: string, entry: Entry): void {
+export function install(root: string, entry: Entry): void {
   const target = safePath(root, entry.path, true);
   if (exists(target)) {
     if (readProjectFile(root, entry.path) === entry.content) return;
@@ -91,7 +94,7 @@ function install(root: string, entry: Entry): void {
   }
 }
 
-function validateChoices(policy: unknown, agents: unknown): Choices {
+export function validateChoices(policy: unknown, agents: unknown): Choices {
   if (typeof policy !== 'string' || !policies.includes(policy as Policy) ||
       !Array.isArray(agents) || agents.some(agent => typeof agent !== 'string' || !Object.hasOwn(adapters, agent)) ||
       new Set(agents).size !== agents.length) throw new Error('Choose a supported tracking policy and adapter list.');
@@ -101,7 +104,8 @@ function validateChoices(policy: unknown, agents: unknown): Choices {
 function readState(root: string): State | undefined {
   if (!exists(safePath(root, statePath))) return undefined;
   const raw = readObject(readProjectFile(root, statePath));
-  if (raw?.owner !== owner || raw.version !== version && raw.version !== '0.1.0') throw new Error('Unrecognized initialization journal. Review it manually.');
+  if (raw?.owner !== owner || !bundledVersions.includes(raw.version as string)) throw new Error('Unrecognized initialization journal. Review it manually.');
+  if (typeof raw.version !== 'string') throw new Error('Invalid initialization version.');
   const choices = validateChoices(raw.policy, raw.agents);
   const paths = templates({ ...choices, version: raw.version }).map(entry => entry.path);
   const { create, preserve } = raw;

@@ -5,7 +5,7 @@ The [README](../README.md) describes the kit. The [approved specification](SPECI
 | Phase | Milestone | Completion check | Status |
 | --- | --- | --- | --- |
 | 1 | Approve the design | Agree on the requirements, proposed layout, and CLI boundaries. | Done |
-| 2 | Establish the repository | Publish the approved baseline, roadmap, and lightweight repository instructions. | In review. README and specification are on `main`. Roadmap and agent instructions are drafted. |
+| 2 | Establish the repository | Publish the approved baseline, roadmap, and lightweight repository instructions. | Done. All four approved files are published on `main`. |
 | 3 | Build the read-only CLI | Test deterministic discovery, `doctor`, and `init --dry-run` against representative projects. Verify that checks and previews leave project files and external state untouched. | Planned |
 | 4 | Initialize and adopt projects | Support fresh starters, established codebases, and existing AI setups. Verify previews, stepwise approval, backups, safe reruns, and recovery after interruption. | Planned |
 | 5 | Verify agent integration | Test real Claude Code and Codex instruction discovery and approval behavior, supported Cursor configurations if enabled, skills discovery, and resumable handoffs. | Planned |
@@ -19,4 +19,4 @@ The [README](../README.md) describes the kit. The [approved specification](SPECI
 - Get separate approval before starting each phase. Within a phase, default to approval one step at a time.
 - Track release decisions here as they arise. The license is pending and requires approval before inviting public reuse.
 
-**Next checkpoint:** Review `AGENTS.md` and this roadmap. Publishing them requires separate approval. Phase 3 starts only after its own approval.
+**Next checkpoint:** Phase 2 is complete. Phase 3 requires separate approval.

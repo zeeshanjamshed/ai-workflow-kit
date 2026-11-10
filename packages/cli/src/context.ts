@@ -1,5 +1,5 @@
 import { homedir } from 'node:os';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { readdirSync, realpathSync, statSync } from 'node:fs';
 import { readProjectFile, within } from './discovery.ts';
 import type { Project } from './discovery.ts';
@@ -45,15 +45,20 @@ function skillFiles(root: string, nested: boolean): string[] {
 }
 
 export function discoverSkills(project: Project, cwd: string, home = homedir()) {
-  const directories = [project.root];
-  for (let dir = cwd; within(project.root, dir) && dir !== project.root; dir = dirname(dir)) directories.push(dir);
+  // Use the same OS canonicalization for the Git-reported root and the working directory.
+  const root = realpathSync.native(project.root);
+  const directories = [root];
+  for (let dir = realpathSync.native(cwd); within(root, dir) && relative(root, dir); dir = dirname(dir)) {
+    directories.push(dir);
+  }
+  const displayPath = (base: string, path: string) => relative(base, path).split(sep).join('/');
 
   return skillRoots.flatMap(({ agent, directory, nested }) => [
     ...directories.flatMap(dir => skillFiles(join(dir, directory), nested).map(path => ({
-      agent, scope: 'project', path: relative(project.root, path),
+      agent, scope: 'project', path: displayPath(root, path),
     }))),
     ...skillFiles(join(home, directory), nested).map(path => ({
-      agent, scope: 'user', path: relative(home, path),
+      agent, scope: 'user', path: displayPath(home, path),
     })),
   ]);
 }

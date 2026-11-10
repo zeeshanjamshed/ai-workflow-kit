@@ -2,7 +2,7 @@
 
 A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, and other compatible coding agents.
 
-> **Status:** Work in progress. The read-only CLI is available from this repository. The installer and npm release are pending.
+> **Status:** Work in progress. The CLI is available from this repository for read-only checks, previews, and approved project initialization. The npm release is pending.
 
 ## What we're building
 
@@ -13,16 +13,16 @@ A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, a
 - **Multi-agent compatibility:** Shared rules and knowledge with lightweight agent-specific entry points and optional parallel coordination.
 - **Independent projects:** Each initialized project owns its setup and can selectively review master updates.
 
-## Planned commands
+## Commands
 
-| Command | Intended behavior |
+| Command | Behavior |
 | --- | --- |
 | `ai-setup init` | Discover a project, propose a safe setup, and apply approved steps |
 | `ai-setup init --dry-run` | Preview without modifying the project |
-| `ai-setup update` | Review proposed improvements from a newer master release |
+| `ai-setup update` | Planned. Review proposed improvements from a newer master release |
 | `ai-setup doctor` | Read-only consistency and health checks |
 
-Run the read-only commands from a checkout with Node.js 22.18 or newer.
+Run these commands from a checkout with Node.js 22.18 or newer.
 
 ```sh
 npm run ai-setup -- doctor
@@ -32,7 +32,23 @@ npm test
 
 To inspect another project, run `node /absolute/path/to/ai-workflow-kit/packages/cli/src/main.ts doctor` from that project's directory. Both commands emit JSON. Doctor exits with code 1 if it finds issues or inspection fails. Unsupported commands exit with code 2.
 
-Discovery reports local signals such as Git state, project markers, declared framework versions, and agent paths. The dry run lists candidate paths and flags existing files for review. Doctor checks common instruction entry points, basic manifest validity, and local Markdown links. Confirm agent behavior, rule conflicts, and project-specific context separately. Apply-mode initialization and updates are pending.
+Discovery reports local signals such as Git state, project markers, declared framework versions, and agent paths. The dry run lists candidate paths and flags existing files for review. Doctor checks common instruction entry points, basic manifest validity, and local Markdown links. Confirm agent behavior, rule conflicts, and project-specific context separately. Updates are planned.
+
+## Initialize a project
+
+From the target project's directory, run the CLI from your kit checkout:
+
+```sh
+node /absolute/path/to/ai-workflow-kit/packages/cli/src/main.ts init
+```
+
+Choose a tracking policy and optional Claude, Codex, or Cursor entry points. Inspect the preview, which shows exact proposed contents and paths. Type `apply` to approve that plan. Any other response leaves the project untouched. For an exact read-only preview, use `init --dry-run --tracking=mixed --agents=codex`. An empty `--agents=` selects no entry points.
+
+- **Tracked** leaves new setup records eligible to commit and share.
+- **Mixed** leaves setup eligible to share and ignores the `.ai/knowledge/`, `.ai/decisions/`, and `.ai/tasks/` directories.
+- **Local-only** ignores the new `.ai/` records. In a Git repository, any new root or Cursor entry point must already be ignored and untracked. Choose no entry points if existing ignore rules do not cover them. Local records need independent backups.
+
+Initialization creates missing files and preserves existing instructions, skills, and project knowledge in place. It makes no Git commits or changes to existing files, so there are no overwritten originals to back up. Reconcile existing custom instructions manually. An incompatible privacy rule or an unrecognized manifest blocks initialization. If interrupted, rerun `init` to review and approve the saved plan. The journal remains available for inspection, and a completed manifest makes reruns a no-op. Real agent discovery and approval behavior are verified in a later phase.
 
 ## Specification
 

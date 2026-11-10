@@ -81,6 +81,16 @@ Prompt instructions guide behavior. Use the agent’s native sandbox and permiss
 
 References: [Claude Code instructions](https://code.claude.com/docs/en/memory), [Claude Code skills](https://code.claude.com/docs/en/skills), [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Codex skills](https://learn.chatgpt.com/docs/build-skills), [Cursor rules](https://cursor.com/docs/rules), and [Cursor skills](https://cursor.com/docs/skills).
 
+## Coordinate parallel work
+
+From the target checkout, run `ai-setup coordinate status` before editing. Use `coordinate claim <task> <agent> <path> [path...]` to claim files or directories, or quote `"*"` for a repository-wide claim. Type `apply` after reviewing the plan. Keep the returned ownership token private. Use it with `coordinate renew <task> <token>` or `coordinate release <task> <token> [.ai/tasks/<id>.md]`.
+
+Claims last one hour. Stale claims still block overlapping work until you confirm the old writer stopped and explicitly approve `coordinate takeover <task> <agent> <path> [path...]`. A crashed metadata writer may leave `write.lock` in the reported coordination directory. Clear the empty lock directory manually only after confirming no writer is running.
+
+Pass `--worktree` from an explicitly created linked worktree. The command never creates branches or worktrees. Same-clone worktrees share advisory ownership through Git’s common directory. Separate clones and working-file edits are independent. Share durable handoffs through an approved Git or other sync step, and verify the recorded commit, local changes, and handoff before acting. Coordination never authorizes project writes.
+
+CI checks Node.js 22 and 24 on Linux, macOS, and Windows, runs strict type checks and fixture tests, verifies offline package installation, and audits npm dependencies. See the [project plan](docs/PROJECT_PLAN.md) for observed results. Workflow fixtures exercise CLI boundaries and handoffs. Live agent behavior is checked separately.
+
 ## Specification
 
 Read the [master specification](docs/SPECIFICATION.md) for the approved requirements, proposed structures, safety boundaries, and acceptance criteria.

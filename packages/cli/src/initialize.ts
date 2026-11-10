@@ -5,6 +5,7 @@ import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { discover, exists, readObject, readProjectFile, inspectGitPath } from './discovery.ts';
 import type { Project } from './discovery.ts';
+import { adapterInstructions, permissions as currentPermissions, projectIndex } from './instructions.ts';
 
 const owner = 'ai-workflow-kit';
 const version = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8')).version as string;
@@ -22,7 +23,9 @@ type State = Choices & { owner: string; version: string; create: string[]; prese
 const rules = 'Read-only inspection may proceed. Explain the scope and risks and get explicit approval before writes or external changes. Approve each step by default. Preserve existing work, verify changes, and report results briefly.';
 const permissions = `# Project permissions\n\n${rules}\n\nFor known breaking changes, explain the impact, alternatives, and recovery. Obtain three distinct explicit confirmations. Use native safeguards for risky actions.\n`;
 
-function templates(choices: Choices): Entry[] {
+function templates(choices: Choices & { version?: string }): Entry[] {
+  const legacy = choices.version === '0.1.0';
+  const templateVersion = choices.version ?? version;
   const result: Entry[] = [];
   if (choices.policy !== 'tracked') {
     result.push({ path: ignorePath, content: choices.policy === 'local-only'
@@ -30,15 +33,15 @@ function templates(choices: Choices): Entry[] {
       : '/knowledge/\n/decisions/\n/tasks/\n' });
   }
   result.push(
-    { path: '.ai/README.md', content: '# Project context\n\nAdd verified project context as it becomes useful. Start with [project permissions](rules/permissions.md) and preserve existing project instructions.\n' },
-    { path: '.ai/rules/permissions.md', content: permissions },
-    { path: '.ai/config.yaml', content: `version: "${version}"\ntracking: ${choices.policy}\nadapters: [${choices.agents.join(', ')}]\n` },
+    { path: '.ai/README.md', content: legacy ? '# Project context\n\nAdd verified project context as it becomes useful. Start with [project permissions](rules/permissions.md) and preserve existing project instructions.\n' : projectIndex },
+    { path: '.ai/rules/permissions.md', content: legacy ? permissions : currentPermissions },
+    { path: '.ai/config.yaml', content: `version: "${templateVersion}"\ntracking: ${choices.policy}\nadapters: [${choices.agents.join(', ')}]\n` },
   );
   for (const agent of choices.agents) {
     const cursor = agent === 'cursor';
     const prefix = cursor ? '---\ndescription: Project workflow and approvals\nalwaysApply: true\n---\n\n' : '';
     const index = cursor ? '../../.ai/README.md' : '.ai/README.md';
-    result.push({ path: adapters[agent], content: `${prefix}# Project workflow\n\n${rules}\n\nRead ${index} for project context and shared rules.\n` });
+    result.push({ path: adapters[agent], content: legacy ? `${prefix}# Project workflow\n\n${rules}\n\nRead ${index} for project context and shared rules.\n` : adapterInstructions(agent) });
   }
   return result;
 }
@@ -98,14 +101,14 @@ function validateChoices(policy: unknown, agents: unknown): Choices {
 function readState(root: string): State | undefined {
   if (!exists(safePath(root, statePath))) return undefined;
   const raw = readObject(readProjectFile(root, statePath));
-  if (raw?.owner !== owner || raw.version !== version) throw new Error('Unrecognized initialization journal. Review it manually.');
+  if (raw?.owner !== owner || raw.version !== version && raw.version !== '0.1.0') throw new Error('Unrecognized initialization journal. Review it manually.');
   const choices = validateChoices(raw.policy, raw.agents);
-  const paths = templates(choices).map(entry => entry.path);
+  const paths = templates({ ...choices, version: raw.version }).map(entry => entry.path);
   const { create, preserve } = raw;
   if (!Array.isArray(create) || !Array.isArray(preserve) ||
       paths.some(path => Number(create.includes(path)) + Number(preserve.includes(path)) !== 1) ||
       create.length + preserve.length !== paths.length) throw new Error('Invalid initialization journal.');
-  return { owner, version, ...choices, create, preserve };
+  return { owner, version: raw.version, ...choices, create, preserve };
 }
 
 function plan(project: Project, choices: Choices): State {
@@ -114,7 +117,10 @@ function plan(project: Project, choices: Choices): State {
   for (const { path } of templates(choices)) {
     const agent = choices.agents.find(name => adapters[name] === path);
     const existing = agent && project.agents.find(info => info.name === agent)?.paths.some(p => !p.endsWith('/skills'));
-    (exists(safePath(project.root, path)) || existing ? preserve : create).push(path);
+    // Cursor can use AGENTS.md directly when Codex is enabled or the file already exists.
+    const sharedCursor = agent === 'cursor' && (choices.agents.includes('codex') && !project.agents.some(info => info.name === 'codex' && info.paths.includes('AGENTS.override.md')) ||
+      project.agents.some(info => info.name === 'codex' && info.paths.includes('AGENTS.md')));
+    (exists(safePath(project.root, path)) || existing || sharedCursor ? preserve : create).push(path);
   }
   return { owner, version, ...choices, create, preserve };
 }
@@ -181,7 +187,7 @@ export async function initialize(project: Project, options?: Choices, dryRun = f
     const manifest: Entry = {
       path: manifestPath,
       content: json({
-        owner, version, tracking: state.policy, adapters: state.agents,
+        owner, version: state.version, tracking: state.policy, adapters: state.agents,
         files: Object.fromEntries(entries.map(entry => [entry.path, { sha256: sha(entry.content) }])),
         preserved: state.preserve,
       }),

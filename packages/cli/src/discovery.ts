@@ -138,6 +138,7 @@ export function discover(start = process.cwd()) {
     git: {
       detected: Boolean(gitRoot || has('.git')),
       branch: gitRoot ? git(root, ['symbolic-ref', '--quiet', '--short', 'HEAD']) : undefined,
+      head: gitRoot ? git(root, ['rev-parse', '--verify', 'HEAD']) : undefined,
       dirty: status === undefined ? undefined : status.length > 0,
       aiTracked: gitRoot ? Boolean(git(root, ['ls-files', '--', '.ai/'])) : undefined,
       aiIgnored: gitRoot ? git(root, ['check-ignore', '--no-index', '--stdin'], '.ai/\n') !== undefined : undefined,

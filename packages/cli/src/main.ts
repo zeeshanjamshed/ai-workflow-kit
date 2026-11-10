@@ -1,19 +1,26 @@
 #!/usr/bin/env node
 import { discover } from './discovery.ts';
 import { diagnose, preview } from './reports.ts';
+import { realpathSync } from 'node:fs';
+import { discoverSkills, resumeContext } from './context.ts';
 import { initialize, parseChoices } from './initialize.ts';
 
-const usage = 'Usage: ai-setup doctor | ai-setup init [--dry-run] [--tracking=POLICY --agents=LIST]';
+const usage = 'Usage: ai-setup doctor | ai-setup skills | ai-setup context [task-id] | ai-setup init [--dry-run] [--tracking=POLICY --agents=LIST]';
 const [command = '', ...args] = process.argv.slice(2);
 
 if (command === '--help' || command === '-h' || command === '') {
   console.log(usage);
-} else if (command === 'doctor' && args.length === 0 || command === 'init') {
+} else if ((command === 'doctor' || command === 'skills') && args.length === 0 ||
+           command === 'context' && args.length <= 1 || command === 'init') {
   try {
     const project = discover();
     const dryRun = args[0] === '--dry-run';
     const options = dryRun ? args.slice(1) : args;
-    if (command === 'init' && (!dryRun || options.length)) {
+    if (command === 'skills') {
+      console.log(JSON.stringify(discoverSkills(project, realpathSync(process.cwd())), null, 2));
+    } else if (command === 'context') {
+      console.log(JSON.stringify(resumeContext(project, args[0]), null, 2));
+    } else if (command === 'init' && (!dryRun || options.length)) {
       await initialize(project, options.length ? parseChoices(options) : undefined, dryRun);
     } else {
       const report = command === 'doctor' ? diagnose(project) : preview(project);

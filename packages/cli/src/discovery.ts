@@ -7,6 +7,7 @@ const agentFiles = {
   claude: ['CLAUDE.md', '.claude/CLAUDE.md', '.claude/rules', '.claude/skills'],
   codex: ['AGENTS.md', 'AGENTS.override.md', '.agents/skills'],
   cursor: ['.cursor/rules', '.cursorrules', '.cursor/skills'],
+  other: ['.github/copilot-instructions.md', 'GEMINI.md', '.windsurfrules', '.aider.conf.yml'],
 };
 const frameworkNames = ['next', 'react', 'vue', 'nuxt', 'svelte', '@angular/core', 'expo', 'react-native', 'express', 'astro', '@sveltejs/kit'];
 
@@ -60,9 +61,9 @@ function executable(name: string): boolean {
   );
 }
 
-function git(root: string, args: string[], input?: string): string | undefined {
+function runGit(root: string, args: string[], input?: string) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_')));
-  const result = spawnSync('git', [
+  return spawnSync('git', [
     '--no-optional-locks', '--no-lazy-fetch', '-c', 'core.fsmonitor=false',
     '-c', 'core.untrackedCache=false', ...args,
   ], {
@@ -70,7 +71,20 @@ function git(root: string, args: string[], input?: string): string | undefined {
     env: { ...env, GIT_TERMINAL_PROMPT: '0', GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: process.platform === 'win32' ? 'NUL' : '/dev/null' },
     encoding: 'utf8', input, timeout: 5000, maxBuffer: 4 * 1024 * 1024, windowsHide: true,
   });
+}
+
+function git(root: string, args: string[], input?: string): string | undefined {
+  const result = runGit(root, args, input);
   return result.status === 0 ? result.stdout.trimEnd() : undefined;
+}
+
+export function inspectGitPath(root: string, path: string, kind: 'tracked' | 'ignored'): boolean | undefined {
+  if (kind === 'tracked') {
+    const result = git(root, ['ls-files', '--', path]);
+    return result === undefined ? undefined : result.length > 0;
+  }
+  const { status } = runGit(root, ['check-ignore', '--no-index', '--quiet', '--', path]);
+  return status === 0 ? true : status === 1 ? false : undefined;
 }
 
 function fallbackRoot(start: string): string {
@@ -93,7 +107,7 @@ export function discover(start = process.cwd()) {
   const has = (path: string) => exists(join(root, path));
   const tools = Object.fromEntries(['git', 'node', 'npm', 'pnpm', 'yarn', 'claude', 'codex', 'cursor'].map(name => [name, executable(name)]));
   const agents = Object.entries(agentFiles).map(([name, paths]) => ({
-    name, paths: paths.filter(has), onPath: tools[name],
+    name, paths: paths.filter(has), onPath: tools[name] ?? false,
   }));
   const manifest = readObject(readProjectFile(root, '.ai/setup-manifest.json'));
   const pkg = readObject(readProjectFile(root, 'package.json'));

@@ -1,0 +1,11 @@
+{
+  "name": "@zeeshanjamshed/ai-workflow-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "ai-setup": "node packages/cli/src/main.ts",
+    "test": "node --test packages/cli/tests/cli.test.ts"
+  }
+}

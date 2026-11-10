@@ -2,7 +2,7 @@
 
 A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, and other compatible coding agents.
 
-> **Status:** Work in progress. The design baseline is approved, but the CLI and installer have **not been implemented or published**.
+> **Status:** Work in progress. The read-only CLI is available from this repository. The installer and npm release are pending.
 
 ## What we're building
 
@@ -22,7 +22,17 @@ A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, a
 | `ai-setup update` | Review proposed improvements from a newer master release |
 | `ai-setup doctor` | Read-only consistency and health checks |
 
-**These commands do not exist yet.** We'll build, test, and publish the CLI in later, separately approved steps.
+Run the read-only commands from a checkout with Node.js 22.18 or newer.
+
+```sh
+npm run ai-setup -- doctor
+npm run ai-setup -- init --dry-run
+npm test
+```
+
+To inspect another project, run `node /absolute/path/to/ai-workflow-kit/packages/cli/src/main.ts doctor` from that project's directory. Both commands emit JSON. Doctor exits with code 1 if it finds issues or inspection fails. Unsupported commands exit with code 2.
+
+Discovery reports local signals such as Git state, project markers, declared framework versions, and agent paths. The dry run lists candidate paths and flags existing files for review. Doctor checks common instruction entry points, basic manifest validity, and local Markdown links. Confirm agent behavior, rule conflicts, and project-specific context separately. Apply-mode initialization and updates are pending.
 
 ## Specification
 

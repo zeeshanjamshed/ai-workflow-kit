@@ -2,7 +2,7 @@
 
 A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, and other compatible coding agents.
 
-> **Status:** Work in progress. The CLI is available from this repository for read-only checks, previews, and approved project initialization. The npm release is pending.
+> **Status:** Work in progress. The CLI is available from this repository for read-only checks, previews, approved initialization, and safe bundled updates. The npm release is pending.
 
 ## What we're building
 
@@ -19,7 +19,7 @@ A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, a
 | --- | --- |
 | `ai-setup init` | Discover a project, propose a safe setup, and apply approved steps |
 | `ai-setup init --dry-run` | Preview without modifying the project |
-| `ai-setup update` | Planned. Review proposed improvements from a newer master release |
+| `ai-setup update` | Compare bundled defaults with project files and apply approved changes |
 | `ai-setup doctor` | Read-only consistency and health checks |
 
 Run these commands from a checkout with Node.js 22.18 or newer.
@@ -32,7 +32,7 @@ npm test
 
 To inspect another project, run `node /absolute/path/to/ai-workflow-kit/packages/cli/src/main.ts doctor` from that project's directory. Both commands emit JSON. Doctor exits with code 1 if it finds issues or inspection fails. Unsupported commands exit with code 2.
 
-Discovery reports local signals such as Git state, project markers, declared framework versions, and agent paths. The dry run lists candidate paths and flags existing files for review. Doctor checks common instruction entry points, basic manifest validity, and local Markdown links. Confirm agent behavior, rule conflicts, and project-specific context separately. Updates are planned.
+Discovery reports local signals such as Git state, project markers, declared framework versions, and agent paths. The dry run lists candidate paths and flags existing files for review. Doctor checks common instruction entry points, basic manifest validity, and local Markdown links. Confirm agent behavior, rule conflicts, and project-specific context separately. Updates use the baseline bundled with the installed CLI.
 
 ## Initialize a project
 
@@ -49,6 +49,19 @@ Choose a tracking policy and optional Claude, Codex, or Cursor entry points. Ins
 - **Local-only** ignores the new `.ai/` records. In a Git repository, any new root or Cursor entry point must already be ignored and untracked. Choose no entry points if existing ignore rules do not cover them. Local records need independent backups.
 
 Initialization creates missing files and preserves existing instructions, skills, and project knowledge in place. It makes no Git commits or changes to existing files, so there are no overwritten originals to back up. Reconcile existing custom instructions manually. An incompatible privacy rule or an unrecognized manifest blocks initialization. If interrupted, rerun `init` to review and approve the saved plan. The journal remains available for inspection, and a completed manifest makes reruns a no-op. Real agent discovery and approval behavior are verified in a later phase.
+
+## Updates, backups, and installation
+
+From an initialized project, use `ai-setup update --dry-run` to compare the installed baseline, local files, and the current bundled version. The update checks manifest hashes and works offline. It replaces an unchanged kit file when the bundled default changes and preserves local edits when that default stays the same. If both sides changed, or a managed file is missing, the update stops for review. Existing unmanaged rules, skills, knowledge, and decisions stay in place.
+
+- `ai-setup update` shows the plan and waits for `apply`. Use `--version=0.3.0` to select the current bundled release explicitly.
+- `ai-setup pin <version>` pins the installed or current bundled version. Use `ai-setup pin none` to unpin. Both require approval.
+- `ai-setup repair` can restore missing managed files from the installed baseline after approval. It preserves existing files.
+- `ai-setup rollback <backup-id>` previews the inverse operation and requires approval. It refuses to overwrite subsequent edits. If interrupted, rerun `ai-setup update` to review and resume the pending operation.
+
+Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of managed files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, and 0.3.0. It upgrades to its own version and leaves version downgrades to rollback.
+
+To build a local tarball from this checkout, run `npm ci`, `npm run typecheck`, `npm test`, and `npm pack`. Then install the tarball with `npm install --global /path/to/the-package.tgz` to use the `ai-setup` executable. The tarball contains compiled JavaScript and needs no runtime dependencies. Linux verification covers Node.js 22 and 24 source tests, plus offline tarball installation and executable checks on Node.js 24. macOS and Windows are pending. The package remains private and unpublished.
 
 ## Agent instructions, skills, and handoffs
 

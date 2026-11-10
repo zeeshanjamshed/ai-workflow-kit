@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, sep } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 
@@ -35,8 +35,9 @@ test('monorepo adoption preserves custom rules and supports nested skills and ha
     assert.match(run(['init', '--tracking=tracked', '--agents=codex,claude'], 'apply\n'), /Initialized and verified/);
     assert.match(run(['init']), /Already initialized/);
     assert.equal(JSON.parse(run(['doctor'])).project.packageWorkspaces, true);
-    const skills = JSON.parse(run(['skills'])) as { path: string }[];
-    assert.ok(skills.some(skill => skill.path.split(sep).join('/') === 'packages/app/.agents/skills/review/SKILL.md'));
+    const skills = JSON.parse(run(['skills'])) as { agent: string; scope: string; path: string }[];
+    assert.ok(skills.some(skill => skill.agent === 'codex' && skill.scope === 'project' &&
+      skill.path === 'packages/app/.agents/skills/review/SKILL.md'), JSON.stringify(skills));
     assert.match(JSON.parse(run(['context', 'pilot'])).handoff.markdown, /order status contract/);
     const claim = run(['coordinate', 'claim', 'pilot', 'codex', 'packages/app'], 'apply\n');
     const token = /Ownership token: (\S+)/.exec(claim)?.[1];

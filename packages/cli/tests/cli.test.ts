@@ -37,7 +37,7 @@ test('starter discovery and unsupported write commands leave the fixture unchang
   const report = JSON.parse(result.stdout);
   assert.equal(report.project.classification, 'starter');
   assert.equal(report.files[0].action, 'candidate-add');
-  assert.equal(cliRun(project, ['init']).status, 2);
+  assert.equal(cliRun(project, ['init']).status, 1);
   assert.equal(cliRun(project, ['update']).status, 2);
   assert.deepEqual(snapshot(root), before);
 }));

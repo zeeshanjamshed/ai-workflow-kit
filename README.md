@@ -50,6 +50,24 @@ Choose a tracking policy and optional Claude, Codex, or Cursor entry points. Ins
 
 Initialization creates missing files and preserves existing instructions, skills, and project knowledge in place. It makes no Git commits or changes to existing files, so there are no overwritten originals to back up. Reconcile existing custom instructions manually. An incompatible privacy rule or an unrecognized manifest blocks initialization. If interrupted, rerun `init` to review and approve the saved plan. The journal remains available for inspection, and a completed manifest makes reruns a no-op. Real agent discovery and approval behavior are verified in a later phase.
 
+## Agent instructions, skills, and handoffs
+
+New setups can generate Claude Code’s `CLAUDE.md`, Codex’s `AGENTS.md`, or a Cursor project rule. Claude imports the shared permissions file. Codex loads `AGENTS.md` and reads shared context on demand. Cursor can use the same `AGENTS.md` when present, or a kit-generated always-applied rule for Cursor-only setups. Existing entries remain authoritative and need manual reconciliation where they differ. Completed older setups stay intact, and interrupted Phase 4 setups resume with their original templates.
+
+Run `ai-setup skills` from the project or relevant subdirectory to inventory `SKILL.md` paths in `.claude/skills`, `.agents/skills`, and `.cursor/skills` in project scope and under the current home directory. The inventory shows filesystem candidates, including third-party skills at those paths. It does not execute skills or resolve plugin, managed, synced, or disabled entries. Verify actual availability in the agent UI.
+
+Use `ai-setup context` to find project knowledge, decisions, and task handoffs. Use `ai-setup context <task-id>` to read one task with current Git context. If you run from another project, invoke `node /absolute/path/to/ai-workflow-kit/packages/cli/src/main.ts` with the same arguments. For approved handoff writes, use `.ai/tasks/<task-id>.md` and record scope, approvals, affected files, Git branch and commit, verified findings, tests, blockers, and next action. Keep secrets out and verify claims against Git and code before continuing. Ignored and uncommitted records need an explicit sharing mechanism.
+
+### Verify an agent in a disposable project
+
+1. Initialize a disposable Git repository with the relevant adapter enabled. Add a harmless unique phrase to the fixture’s shared permissions, a sample skill in its native directory, and a task record.
+2. Start a fresh agent session in the fixture using its native safe settings. Ask it to report the phrase, identify the skill, and resume the task. Check that it reads the task, inspects Git, and distinguishes evidence from assumptions.
+3. Ask for a write without granting approval. Check that the agent asks first and that the fixture stays unchanged. Record the runtime version, permissions, and observed result. Repeat with existing custom instructions to check preservation and precedence.
+
+Prompt instructions guide behavior. Use the agent’s native sandbox and permissions for enforcement. Automated tests check generated files and read-only commands. Live verification is pending for Claude Code and Cursor, which were unavailable here. Codex CLI 0.167.0-alpha.4 was installed, but its isolated run could not load instructions because the filesystem sandbox helper could not build the bubblewrap command. The isolated profile was also signed out.
+
+References: [Claude Code instructions](https://code.claude.com/docs/en/memory), [Claude Code skills](https://code.claude.com/docs/en/skills), [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Codex skills](https://learn.chatgpt.com/docs/build-skills), [Cursor rules](https://cursor.com/docs/rules), and [Cursor skills](https://cursor.com/docs/skills).
+
 ## Specification
 
 Read the [master specification](docs/SPECIFICATION.md) for the approved requirements, proposed structures, safety boundaries, and acceptance criteria.

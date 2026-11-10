@@ -4,9 +4,10 @@ import { diagnose, preview } from './reports.ts';
 import { realpathSync } from 'node:fs';
 import { discoverSkills, resumeContext } from './context.ts';
 import { update } from './update.ts';
+import { coordinate } from './coordination.ts';
 import { initialize, parseChoices } from './initialize.ts';
 
-const usage = 'Usage: ai-setup doctor | ai-setup skills | ai-setup context [task-id] | ai-setup init [--dry-run] [--tracking=POLICY --agents=LIST] | ai-setup update [--dry-run] | ai-setup repair | ai-setup pin VERSION | ai-setup rollback ID';
+const usage = 'Usage: ai-setup doctor | ai-setup skills | ai-setup context [task-id] | ai-setup init [--dry-run] [--tracking=POLICY --agents=LIST] | ai-setup update [--dry-run] | ai-setup repair | ai-setup pin VERSION | ai-setup rollback ID | ai-setup coordinate ACTION';
 const [command = '', ...args] = process.argv.slice(2);
 
 const operations = ['update', 'repair', 'pin', 'rollback'];
@@ -14,12 +15,14 @@ const operations = ['update', 'repair', 'pin', 'rollback'];
 if (command === '--help' || command === '-h' || command === '') {
   console.log(usage);
 } else if ((command === 'doctor' || command === 'skills') && args.length === 0 ||
-           command === 'context' && args.length <= 1 || command === 'init' || operations.includes(command)) {
+           command === 'context' && args.length <= 1 || command === 'init' || operations.includes(command) || command === 'coordinate') {
   try {
     const project = discover();
     const dryRun = args[0] === '--dry-run';
     const options = dryRun ? args.slice(1) : args;
-    if (operations.includes(command)) {
+    if (command === 'coordinate') {
+      await coordinate(project, args);
+    } else if (operations.includes(command)) {
       await update(project, command, args);
     } else if (command === 'skills') {
       console.log(JSON.stringify(discoverSkills(project, realpathSync(process.cwd())), null, 2));

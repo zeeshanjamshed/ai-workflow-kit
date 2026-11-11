@@ -1,6 +1,6 @@
 # Release readiness
 
-**Decision: hold v1.0.0.** The 0.4.1 package built from this checkout is a local pilot candidate. Keep npm publication, a release tag, and general distribution gated. The license is pending owner approval.
+**Decision: hold v1.0.0.** The 0.4.2 package built from this checkout is a local pilot candidate. Keep npm publication, a release tag, and general distribution gated. The license is pending owner approval.
 
 ## Evidence against the specification
 
@@ -19,6 +19,10 @@
 Strict TypeScript checks, all 35 automated tests, packaging, and offline global-prefix installation passed. The package smoke test resolves `ai-setup` through PATH from a separate checkout. npm audit reported zero vulnerabilities. A disposable v0.3.0 → v0.4.0 → v0.4.1 run preserved custom instructions and a customized engineering module, activated five selected rules, and kept repeated activation and skill installation unchanged. All six hosted jobs passed on Linux, macOS, and Windows with Node.js 22 and 24. [Pilot fix CI](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/43024729395)
 
 Live agent verification remains pending. A fresh read-only Codex run failed before instruction loading because the sandbox helper could not start bubblewrap. Codex was signed out, and Claude Code and Cursor were unavailable. Repeat on an authenticated disposable project and confirm instruction loading, rule use during ordinary tasks, and approval behavior.
+
+## v0.4.2 one-command quickstart
+
+Quickstart adds a combined dry-run, one approval, native adapter activation, and an ignored journal with recovery and rollback. Guided project analysis and knowledge approval are separate. Automated checks cover custom configuration preservation and safe repeats. Authenticated fresh-session agent behavior remains pending.
 
 ## Candidate checks
 

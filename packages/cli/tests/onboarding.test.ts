@@ -128,3 +128,93 @@ test('approved activation connects selected project-owned rules to native entry 
   assert.equal(inventory().selected, false);
   assert.equal(readFileSync(module, 'utf8'), '# Custom security\nCheck the authentication boundary.\n');
 }));
+
+test('quickstart previews without writes and completes a fresh project with one approval', () => fixture((root, run) => {
+  const original = readFileSync(join(root, 'AGENTS.md'), 'utf8');
+  rmSync(join(root, '.ai'), { recursive: true });
+  rmSync(join(root, 'CLAUDE.md'));
+  assert.match(run(['quickstart', '--dry-run'], 'apply\n').stdout, /starter|existing-ai/);
+  assert.equal(run(['quickstart'], 'no\n').status, 0);
+  assert.equal(existsSync(join(root, '.ai')), false);
+  const result = run(['quickstart'], 'apply\n');
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout.match(/Type apply/g)?.length, 1);
+  assert.match(result.stdout, /guided-project-onboarding/);
+  assert.ok(readFileSync(join(root, 'AGENTS.md'), 'utf8').startsWith(original));
+  assert.match(readFileSync(join(root, 'CLAUDE.md'), 'utf8'), /@\.ai\/rules\/engineering-testing\.md/);
+  assert.equal(JSON.parse(run(['rules']).stdout).modules.filter((item: { selected: boolean }) => item.selected).length, 5);
+  assert.match(run(['quickstart']).stdout, /already complete/);
+  assert.equal(JSON.parse(run(['update', '--dry-run']).stdout).edits.length, 0);
+  const id = result.stdout.match(/Backup ID: ([\da-f-]+)/)?.[1];
+  assert.ok(id);
+  const rollback = run(['rollback', id], 'apply\n');
+  assert.equal(rollback.status, 0, rollback.stderr);
+  assert.equal(readFileSync(join(root, 'AGENTS.md'), 'utf8'), original);
+  assert.equal(existsSync(join(root, '.ai/setup-manifest.json')), false);
+  assert.equal(existsSync(join(root, 'CLAUDE.md')), false);
+}));
+
+test('quickstart keeps existing custom adapters, rules and skills and rejects conflicting activation blocks', () => fixture((root, run) => {
+  const originalManifest = readFileSync(join(root, '.ai/setup-manifest.json'), 'utf8');
+  const override = join(root, 'AGENTS.override.md');
+  const customClaude = join(root, 'CLAUDE.md');
+  const cursor = join(root, '.cursor/rules/custom.mdc');
+  const skill = join(root, '.agents/skills/guided-project-onboarding/SKILL.md');
+  const security = join(root, '.ai/rules/engineering-security.md');
+  mkdirSync(join(root, '.cursor/rules'), { recursive: true });
+  mkdirSync(join(root, '.agents/skills/guided-project-onboarding'), { recursive: true });
+  const custom = '# Project-specific conventions\n';
+  writeFileSync(override, custom);
+  writeFileSync(customClaude, custom);
+  writeFileSync(cursor, custom);
+  writeFileSync(skill, custom);
+  writeFileSync(security, custom);
+  writeFileSync(override, custom + '<!-- ai-workflow-kit:engineering-rules -->\n');
+  assert.equal(run(['quickstart'], 'apply\n').status, 1);
+  assert.equal(existsSync(join(root, '.ai/rules/engineering-testing.md')), false);
+  writeFileSync(override, custom);
+  const result = run(['quickstart'], 'apply\n');
+  assert.equal(result.status, 0, result.stderr);
+  for (const path of [cursor, skill, security]) assert.equal(readFileSync(path, 'utf8'), custom);
+  for (const path of [override, customClaude]) assert.ok(readFileSync(path, 'utf8').startsWith(custom));
+  assert.match(readFileSync(join(root, '.cursor/rules/ai-workflow-kit.mdc'), 'utf8'), /alwaysApply: true[\s\S]*engineering-testing/);
+  assert.equal(readFileSync(join(root, '.ai/setup-manifest.json'), 'utf8'), originalManifest);
+  assert.match(run(['quickstart']).stdout, /already complete/);
+}));
+
+test('quickstart resumes an interrupted journal and detects conflicts before resuming', () => fixture((root, run) => {
+  const result = run(['quickstart'], 'apply\n');
+  assert.equal(result.status, 0, result.stderr);
+  const id = result.stdout.match(/Backup ID: ([\da-f-]+)/)?.[1];
+  assert.ok(id);
+  const backup = join(root, '.ai/update-backups');
+  const journal = readFileSync(join(backup, id + '.json'), 'utf8');
+  writeFileSync(join(backup, '.pending.json'), journal);
+  const module = join(root, '.ai/rules/engineering-testing.md');
+  writeFileSync(module, 'Unrelated user edit');
+  assert.equal(run(['quickstart'], 'apply\n').status, 1);
+  assert.equal(readFileSync(module, 'utf8'), 'Unrelated user edit');
+  rmSync(module);
+  const preview = run(['quickstart', '--dry-run'], 'apply\n');
+  assert.equal(preview.status, 0, preview.stderr);
+  assert.match(preview.stdout, /Resume/);
+  assert.equal(existsSync(module), false);
+  const resumed = run(['quickstart'], 'apply\n');
+  assert.equal(resumed.status, 0, resumed.stderr);
+  assert.equal(existsSync(module), true);
+  assert.equal(existsSync(join(backup, '.pending.json')), false);
+}));
+
+test('quickstart from a nested package changes only the repository-root setup', () => fixture((root, run) => {
+  const nested = join(root, 'packages/app');
+  mkdirSync(nested, { recursive: true });
+  writeFileSync(join(nested, 'AGENTS.md'), '# Package-specific rules\n');
+  const applied = spawnSync(process.execPath, [cli, 'quickstart'], {
+    cwd: nested, input: 'apply\n', encoding: 'utf8', timeout: 15000,
+  });
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.match(applied.stdout, /Workspace detected/);
+  assert.equal(existsSync(join(nested, '.ai')), false);
+  assert.equal(readFileSync(join(nested, 'AGENTS.md'), 'utf8'), '# Package-specific rules\n');
+  assert.match(run(['quickstart']).stdout, /already complete/);
+}));

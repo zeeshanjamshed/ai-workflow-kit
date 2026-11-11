@@ -54,14 +54,26 @@ Initialization creates missing files and preserves existing instructions, skills
 
 From an initialized project, use `ai-setup update --dry-run` to compare the installed baseline, local files, and the current bundled version. The update checks manifest hashes and works offline. It replaces an unchanged kit file when the bundled default changes and preserves local edits when that default stays the same. If both sides changed, or a managed file is missing, the update stops for review. Existing unmanaged rules, skills, knowledge, and decisions stay in place.
 
-- `ai-setup update` shows the plan and waits for `apply`. Use `--version=0.3.0` to select the current bundled release explicitly.
+- `ai-setup update` shows the plan and waits for `apply`. Use `--version=0.4.0` to select the current bundled release explicitly.
 - `ai-setup pin <version>` pins the installed or current bundled version. Use `ai-setup pin none` to unpin. Both require approval.
 - `ai-setup repair` can restore missing managed files from the installed baseline after approval. It preserves existing files.
 - `ai-setup rollback <backup-id>` previews the inverse operation and requires approval. It refuses to overwrite subsequent edits. If interrupted, rerun `ai-setup update` to review and resume the pending operation.
 
-Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of managed files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, and 0.3.0. It upgrades to its own version and leaves version downgrades to rollback.
+Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of managed files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, and 0.4.0. It upgrades to its own version and leaves version downgrades to rollback.
 
 To build a local tarball from this checkout, run `npm ci`, `npm run typecheck`, `npm test`, and `npm pack`. Then install the tarball with `npm install --global /path/to/the-package.tgz` to use the `ai-setup` executable. The tarball contains compiled JavaScript and needs no runtime dependencies. Linux verification covers Node.js 22 and 24 source tests, plus offline tarball installation and executable checks on Node.js 24. macOS and Windows are pending. The package remains private and unpublished.
+
+## Guided onboarding and engineering rules
+
+From the target checkout, run `ai-setup onboard` and give its output to Claude Code or Codex. The inventory includes project and Git signals, up to 300 tracked paths, known instruction locations, and existing knowledge. The agent reads actual manifests, source, tests, and docs to trace relevant architecture and critical flows. Review its proposed facts, hypotheses, and open questions before saving anything.
+
+- `ai-setup onboard install-skills both` previews native project skills for Claude and Codex. Use `claude` or `codex` for one. Restart the agent session and select the guided project onboarding skill.
+- `ai-setup onboard save` accepts the JSON array shown by `onboard` on one input line. Each verified fact needs a tracked source path, line, and exact excerpt. The CLI checks the excerpt and stores the citation. Review the fact itself against the cited code. Enter `apply` after reviewing the exact additions. Use stable record IDs so reruns keep identical records and surface differences.
+- `ai-setup rules minimal` keeps the essential setup. `ai-setup rules recommended` offers the five engineering modules. `ai-setup rules custom architecture testing` selects only those modules. Run `ai-setup rules` to list available and installed modules.
+
+These additions require an initialized project. Preview them before applying, especially when existing instruction files might conflict. An existing target with different contents blocks the plan. The CLI flags file conflicts and lists existing instructions for review. The agent and project owner resolve conflicts in meaning. Generated setup guides point agents to the rule inventory. For existing custom entry points, review and explicitly add a reference to the selected modules using the agent’s normal editing workflow.
+
+Knowledge, optional skills, and selected modules are project-owned additions. The commands preserve existing files and honor the setup’s Git privacy policy. Customize modules with a separately approved edit. Kit updates leave these additions out of the managed manifest, so version changes and rollback do not replace them.
 
 ## Agent instructions, skills, and handoffs
 

@@ -32,7 +32,10 @@ try {
   invoke(['init', '--dry-run', '--tracking=tracked', '--agents=codex']);
   assert.equal(existsSync(join(project, '.ai')), false);
   assert.ok(JSON.parse(invoke(['onboard'])).project.root);
-  invoke(['init', '--tracking=tracked', '--agents=codex'], 'apply\n');
+  invoke(['quickstart', '--dry-run'], 'apply\n');
+  assert.equal(existsSync(join(project, '.ai')), false);
+  assert.match(invoke(['quickstart'], 'apply\n'), /guided-project-onboarding/);
+  assert.match(invoke(['quickstart']), /already complete/);
   assert.equal(JSON.parse(invoke(['update', '--dry-run'])).edits.length, 0);
   assert.deepEqual(JSON.parse(invoke(['coordinate', 'status'])), []);
   console.log('Offline package install and CLI smoke checks passed.');

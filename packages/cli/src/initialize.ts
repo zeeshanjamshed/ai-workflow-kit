@@ -8,8 +8,8 @@ import type { Project } from './discovery.ts';
 import { adapterInstructions, permissions as currentPermissions, projectIndex } from './instructions.ts';
 
 const owner = 'ai-workflow-kit';
-export const version = '0.4.0';
-export const bundledVersions = ['0.1.0', '0.2.0', '0.3.0', version];
+export const version = '0.4.1';
+export const bundledVersions = ['0.1.0', '0.2.0', '0.3.0', '0.4.0', version];
 const statePath = '.ai/.init-plan.json';
 export const manifestPath = '.ai/setup-manifest.json';
 const ignorePath = '.ai/.gitignore';
@@ -27,9 +27,9 @@ const permissions = `# Project permissions\n\n${rules}\n\nFor known breaking cha
 export function templates(choices: Choices & { version?: string }): Entry[] {
   const legacy = choices.version === '0.1.0';
   const templateVersion = choices.version ?? version;
-  const updateGuide = templateVersion === '0.3.0' || templateVersion === '0.4.0'
+  const updateGuide = ['0.3.0', '0.4.0', '0.4.1'].includes(templateVersion)
     ? '\nPreview kit updates with `ai-setup update --dry-run`.\n' : '';
-  const onboardingGuide = templateVersion === '0.4.0'
+  const onboardingGuide = ['0.4.0', '0.4.1'].includes(templateVersion)
     ? '\nRun `ai-setup onboard` before development in an unfamiliar project. Use `ai-setup rules` to locate selected engineering modules and read relevant modules alongside existing instructions. Resolve conflicts with the project owner.\n' : '';
   const indexContents = projectIndex + updateGuide + onboardingGuide;
   const result: Entry[] = [];

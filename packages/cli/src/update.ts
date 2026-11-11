@@ -1,4 +1,6 @@
-import { engineeringModules, isRuleBlockEdit, planRuleActivation, rulePath } from './rule-activation.ts';
+import { checkQuickstartPrivacy, planQuickstart, printOnboardingHandoff, printQuickstart, quickstartDefaults } from './quickstart.ts';
+import type { Edit } from './quickstart.ts';
+import { engineeringModules, isRuleBlockEdit, planRuleActivation, rulePath, splitRuleBlock } from './rule-activation.ts';
 import { randomUUID } from 'node:crypto';
 import { closeSync, lstatSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -12,7 +14,6 @@ const backupDir = '.ai/update-backups';
 const backupIgnore = backupDir + '/.gitignore';
 const owner = 'ai-workflow-kit';
 
-type Edit = { path: string; before: string | null; after: string | null };
 type Transaction = { id: string; action: string; edits: Edit[] };
 
 function json(value: unknown): string {
@@ -124,8 +125,13 @@ function replace(root: string, edit: Edit): void {
 function parseTransaction(source: string, root: string): Transaction {
   const raw = readObject(source);
   if (!raw || typeof raw.id !== 'string' || !/^[a-f\d-]{36}$/.test(raw.id) ||
-      typeof raw.action !== 'string' || !['update', 'repair', 'pin', 'rollback', 'activate-rules'].includes(raw.action) ||
+      typeof raw.action !== 'string' || !['update', 'repair', 'pin', 'rollback', 'activate-rules', 'quickstart', 'rollback-quickstart'].includes(raw.action) ||
       !Array.isArray(raw.edits) || raw.edits.length > 20 || !raw.edits.length) throw new Error('Invalid update journal.');
+  if (raw.action === 'quickstart' || raw.action === 'rollback-quickstart') {
+    const edits = raw.edits as Edit[];
+    validateQuickstartEdits(root, edits, raw.action === 'rollback-quickstart');
+    return { id: raw.id, action: raw.action, edits };
+  }
   const allowed = new Map<string, Set<string>>();
   const current = manifest(read(root, manifestPath));
   const addKnown = (state: ReturnType<typeof manifest>) => {
@@ -158,6 +164,34 @@ function parseTransaction(source: string, root: string): Transaction {
     }
   }
   return { id: raw.id, action: raw.action, edits: raw.edits as Edit[] };
+}
+
+function validateQuickstartEdits(root: string, edits: Edit[], reverse: boolean) {
+  const forward = reverse ? edits.map(edit => ({ path: edit.path, before: edit.after, after: edit.before })).reverse() : edits;
+  const manifestEdit = forward.find(edit => edit.path === manifestPath);
+  const installed = read(root, manifestPath);
+  if (manifestEdit && (manifestEdit.before !== null || installed !== null && installed !== manifestEdit.after ||
+      forward.at(-1) !== manifestEdit)) throw new Error('Invalid quickstart manifest change.');
+  const state = manifest(manifestEdit ? manifestEdit.after : installed);
+  const defaults = bundledVersions.flatMap(version => quickstartDefaults({ ...state.choices, version }));
+  const attachesRecommended = (path: string, before: string, after: string) =>
+    isRuleBlockEdit(path, before, after) && splitRuleBlock(path, after).names.length === engineeringModules.length;
+  const paths = new Set<string>();
+  for (const { path, before, after } of forward) {
+    if (paths.has(path) || before === after || typeof after !== 'string') throw new Error('Invalid quickstart journal edit.');
+    paths.add(path);
+    if (path === manifestPath) continue;
+    if (typeof before === 'string' && attachesRecommended(path, before, after)) continue;
+    if (before === null && defaults.some(entry => entry.path === path &&
+        (entry.content === after || attachesRecommended(path, entry.content, after)))) continue;
+    throw new Error('Quickstart journal contains an unmanaged path or unknown content.');
+  }
+  if (manifestEdit && (state.raw.pin !== undefined || state.managed.some(({ path, content }) =>
+    !forward.some(edit => edit.path === path && edit.before === null &&
+      (edit.after === content || typeof edit.after === 'string' && isRuleBlockEdit(path, content, edit.after)))))) {
+    throw new Error('Quickstart manifest contains files outside the approved setup.');
+  }
+  return state.choices.policy;
 }
 
 async function approve(): Promise<boolean> {
@@ -195,7 +229,7 @@ export async function update(project: Project, action: string, args: string[]): 
   const values = args.filter(arg => arg !== '--dry-run');
   if (args.length !== values.length + Number(dry) || action !== 'activate-rules' && values.length > 1 ||
       action === 'update' && values.length && !/^--version=\d+\.\d+\.\d+$/.test(values[0]) ||
-      action === 'repair' && values.length ||
+      ['repair', 'quickstart'].includes(action) && values.length ||
       action === 'pin' && (values.length !== 1 || !/^(none|\d+\.\d+\.\d+)$/.test(values[0])) ||
       action === 'rollback' && (values.length !== 1 || !/^[a-f\d-]{36}$/.test(values[0]))) throw new Error('Invalid operation arguments.');
   // Keep the complete pending journal with the private backups.
@@ -204,9 +238,12 @@ export async function update(project: Project, action: string, args: string[]): 
   let transaction: Transaction;
   let activationInputs: { path: string; content: string | null }[] = [];
   if (saved !== null) {
-    if (action !== 'update' || values.length) throw new Error('A transaction is pending. Run update to review and resume it.');
     transaction = parseTransaction(saved, root);
-    console.log(json({ pending: true, ...transaction }));
+    const resumeCommand = transaction.action === 'quickstart' ? 'quickstart' : 'update';
+    if (action !== resumeCommand || values.length) throw new Error(`A transaction is pending. Run ai-setup ${resumeCommand} to review and resume it.`);
+    if (action === 'quickstart') {
+      printQuickstart(project, transaction.edits, [], validateQuickstartEdits(root, transaction.edits, false), true);
+    } else console.log(json({ pending: true, ...transaction }));
   } else {
     let edits: Edit[];
     if (action === 'rollback') {
@@ -215,7 +252,25 @@ export async function update(project: Project, action: string, args: string[]): 
       const original = parseTransaction(receipt, root);
       if (original.id !== values[0]) throw new Error('Backup ID does not match.');
       edits = original.edits.map(edit => ({ path: edit.path, before: edit.after, after: edit.before }));
+      if (original.action === 'quickstart') {
+        action = 'rollback-quickstart';
+        edits.reverse();
+      } else if (original.action === 'rollback-quickstart') {
+        throw new Error('Run quickstart to set up this project again.');
+      }
       console.log(json({ action, backup: original.id, edits }));
+    } else if (action === 'quickstart') {
+      const installed = read(root, manifestPath);
+      const setup = installed === null ? undefined : manifest(installed);
+      if (setup?.managed.some(({ path }) => read(root, path) === null)) {
+        throw new Error('A managed setup file is missing. Review ai-setup repair before running quickstart.');
+      }
+      const proposal = planQuickstart(project, path => read(root, path), setup?.choices);
+      edits = proposal.edits;
+      activationInputs = [{ path: manifestPath, content: installed },
+        ...[...proposal.inputs].map(([path, content]) => ({ path, content }))];
+      printQuickstart(project, edits, proposal.preserved, proposal.policy, false);
+      if (!edits.length) printOnboardingHandoff();
     } else if (action === 'activate-rules') {
       const names = values.length === 1 && values[0] === 'all' ? engineeringModules : values;
       edits = planRuleActivation(project, names, path => read(root, path));
@@ -233,7 +288,13 @@ export async function update(project: Project, action: string, args: string[]): 
   }
 
   parseTransaction(json(transaction), root);
+  const quick = ['quickstart', 'rollback-quickstart'].includes(transaction.action);
+  const quickPolicy = quick ? validateQuickstartEdits(root, transaction.edits, transaction.action === 'rollback-quickstart') : undefined;
   function checkRulePrivacy() {
+    if (quickPolicy) {
+      checkQuickstartPrivacy(project, transaction.edits, quickPolicy);
+      return;
+    }
     if (manifest(read(root, manifestPath)).choices.policy === 'local-only' && project.git.detected &&
         transaction.edits.some(({ path, before, after }) => isRuleBlockEdit(path, before, after) &&
           (inspectGitPath(root, path, 'tracked') !== false || inspectGitPath(root, path, 'ignored') !== true))) {
@@ -245,18 +306,23 @@ export async function update(project: Project, action: string, args: string[]): 
   checkBackupPrivacy(project);
   if (dry || !await approve()) return;
   if (activationInputs.some(({ path, content }) => read(root, path) !== content)) {
-    throw new Error('An engineering module changed after preview. Review a fresh plan.');
+    throw new Error('A setup input changed after preview. Review a fresh plan.');
   }
   checkRulePrivacy();
   verifyEdits(root, transaction.edits, saved !== null);
   checkBackupPrivacy(project);
+  const journal = json(transaction);
+  if (Buffer.byteLength(journal) > 1024 * 1024) throw new Error('Combined backup is too large. Review setup in smaller steps.');
   install(root, { path: backupIgnore, content: '*\n' });
   if (project.git.detected && inspectGitPath(root, pending, 'ignored') !== true) throw new Error('Git does not ignore update backups.');
-  const journal = json(transaction);
   install(root, { path: pending, content: journal });
-  for (const edit of transaction.edits) replace(root, edit);
+  const ignoreEdit = transaction.action === 'quickstart' && transaction.edits.find(edit => edit.path === '.ai/.gitignore');
+  if (ignoreEdit) replace(root, ignoreEdit);
+  if (quickPolicy && transaction.action === 'quickstart') checkQuickstartPrivacy(project, transaction.edits, quickPolicy, true);
+  for (const edit of transaction.edits) if (edit !== ignoreEdit) replace(root, edit);
   if (transaction.edits.some(edit => read(root, edit.path) !== edit.after)) throw new Error('Update verification failed.');
   install(root, { path: backupDir + '/' + transaction.id + '.json', content: journal });
   if (read(root, pending) === journal) unlinkSync(safePath(root, pending));
   console.log(`Verified. Backup ID: ${transaction.id}`);
+  if (transaction.action === 'quickstart') printOnboardingHandoff();
 }

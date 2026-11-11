@@ -1,3 +1,5 @@
+import { ruleAdapters, rulePath, splitRuleBlock } from './rule-activation.ts';
+import { update } from './update.ts';
 import { realpathSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
 import { stdin } from 'node:process';
@@ -19,10 +21,20 @@ const skill = `---\nname: guided-project-onboarding\ndescription: Review an exis
 const slug = /^[a-z0-9][a-z0-9-]{0,63}$/;
 type Addition = { path: string; content: string };
 
+function bundledRule(name: string): string {
+  return `# ${name[0].toUpperCase() + name.slice(1)}\n\n${modules[name as keyof typeof modules]}\n`;
+}
+
 function ruleInventory(project: Project) {
+  const adapters = ruleAdapters(project).map(path => ({
+    path, names: splitRuleBlock(path, readProjectFile(project.root, path) ?? '').names,
+  }));
   return Object.keys(modules).map(name => {
-    const path = `.ai/rules/engineering-${name}.md`;
-    return { name, path, present: exists(safePath(project.root, path)) };
+    const path = rulePath(name);
+    const content = readProjectFile(project.root, path);
+    const selectedBy = adapters.filter(adapter => adapter.names.includes(name)).map(adapter => adapter.path);
+    return { name, path, present: content !== undefined, selected: selectedBy.length > 0, selectedBy,
+      provenance: content === undefined ? 'missing' : content === bundledRule(name) ? 'matches-bundle' : 'project-owned' };
   });
 }
 
@@ -100,6 +112,10 @@ function writePlan(project: Project, entries: Addition[]) {
 
 export async function onboard(project: Project, command: 'onboard' | 'rules', args: string[]): Promise<void> {
   const { root } = project;
+  if (command === 'rules' && args[0] === 'activate') {
+    await update(project, 'activate-rules', args.slice(1));
+    return;
+  }
   if (!args.length) {
     console.log(JSON.stringify(command === 'rules'
       ? { modules: ruleInventory(project), existingInstructions: project.agents.flatMap(agent => agent.paths) }
@@ -135,8 +151,8 @@ export async function onboard(project: Project, command: 'onboard' | 'rules', ar
         throw new Error('Use rules minimal, rules recommended, or rules custom [architecture security testing git workflows].');
       }
       build = () => names.map(name => ({
-        path: `.ai/rules/engineering-${name}.md`,
-        content: `# ${name[0].toUpperCase() + name.slice(1)}\n\n${modules[name as keyof typeof modules]}\n`,
+        path: rulePath(name),
+        content: bundledRule(name),
       }));
     } else throw new Error('Use onboard, onboard save, or onboard install-skills claude|codex|both.');
 
@@ -147,7 +163,7 @@ export async function onboard(project: Project, command: 'onboard' | 'rules', ar
       notes: [
         'Review existing instructions for conflicting requirements before applying.',
         'The plan creates only missing files. Existing content stays in place.',
-        'Minimal adds no engineering modules. Existing selected modules are retained.',
+        'Use rules activate to attach existing modules to normal agent sessions. Minimal adds no modules.',
       ],
     }, null, 2));
     if (plan.some(entry => entry.status === 'conflict')) throw new Error('Existing content differs. Review the conflict before proceeding.');

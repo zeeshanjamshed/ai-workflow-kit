@@ -8,16 +8,16 @@ import type { Project } from './discovery.ts';
 import { adapterInstructions, permissions as currentPermissions, projectIndex } from './instructions.ts';
 
 const owner = 'ai-workflow-kit';
-export const version = '0.4.1';
-export const bundledVersions = ['0.1.0', '0.2.0', '0.3.0', '0.4.0', version];
-const statePath = '.ai/.init-plan.json';
+export const version = '0.4.2';
+export const bundledVersions = ['0.1.0', '0.2.0', '0.3.0', '0.4.0', '0.4.1', version];
+export const statePath = '.ai/.init-plan.json';
 export const manifestPath = '.ai/setup-manifest.json';
 const ignorePath = '.ai/.gitignore';
 const policies = ['tracked', 'local-only', 'mixed'] as const;
 type Policy = typeof policies[number];
 const adapters = { codex: 'AGENTS.md', claude: 'CLAUDE.md', cursor: '.cursor/rules/ai-workflow-kit.mdc' };
 type Adapter = keyof typeof adapters;
-type Choices = { policy: Policy; agents: Adapter[] };
+export type Choices = { policy: Policy; agents: Adapter[] };
 type Entry = { path: string; content: string };
 type State = Choices & { owner: string; version: string; create: string[]; preserve: string[] };
 
@@ -27,9 +27,9 @@ const permissions = `# Project permissions\n\n${rules}\n\nFor known breaking cha
 export function templates(choices: Choices & { version?: string }): Entry[] {
   const legacy = choices.version === '0.1.0';
   const templateVersion = choices.version ?? version;
-  const updateGuide = ['0.3.0', '0.4.0', '0.4.1'].includes(templateVersion)
+  const updateGuide = ['0.3.0', '0.4.0', '0.4.1', '0.4.2'].includes(templateVersion)
     ? '\nPreview kit updates with `ai-setup update --dry-run`.\n' : '';
-  const onboardingGuide = ['0.4.0', '0.4.1'].includes(templateVersion)
+  const onboardingGuide = ['0.4.0', '0.4.1', '0.4.2'].includes(templateVersion)
     ? '\nRun `ai-setup onboard` before development in an unfamiliar project. Use `ai-setup rules` to locate selected engineering modules and read relevant modules alongside existing instructions. Resolve conflicts with the project owner.\n' : '';
   const indexContents = projectIndex + updateGuide + onboardingGuide;
   const result: Entry[] = [];
@@ -165,6 +165,9 @@ export async function initialize(project: Project, options?: Choices, dryRun = f
     if (manifest?.owner !== owner || typeof manifest.version !== 'string') throw new Error('Existing setup manifest is unrecognized. It was preserved for manual review.');
     console.log('Already initialized. Existing files were preserved.');
     return;
+  }
+  if (exists(safePath(root, '.ai/update-backups/.pending.json'))) {
+    throw new Error('A setup transaction is pending. Run ai-setup quickstart to review it.');
   }
   const saved = readState(root);
   const input = createInterface({ input: stdin, output: stdout, terminal: false });

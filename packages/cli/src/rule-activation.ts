@@ -8,11 +8,12 @@ const start = '<!-- ai-workflow-kit:engineering-rules -->';
 const end = '<!-- /ai-workflow-kit:engineering-rules -->';
 const adapterPaths = ['AGENTS.md', 'AGENTS.override.md', 'CLAUDE.md', '.claude/CLAUDE.md', '.cursor/rules/ai-workflow-kit.mdc'];
 
-function block(path: string, names: string[]): string {
+function block(path: string, names: string[], includeContext = false): string {
   const claude = path.endsWith('CLAUDE.md');
   const prefix = path === '.claude/CLAUDE.md' ? '../' : '';
   const rules = names.map(name => claude ? `@${prefix}${rulePath(name)}` : `- \`${rulePath(name)}\``);
-  return `\n\n${start}\n## Selected engineering rules\n\nBefore planning or implementing a task, load and apply the applicable rules below from the repository root. Preserve existing instructions and ask the project owner to resolve any conflict before proceeding.\n\n${rules.join('\n')}\n${end}\n`;
+  const context = includeContext ? 'Read `.ai/rules/permissions.md` for approval and safety and `.ai/README.md` for shared project context.\n\n' : '';
+  return `\n\n${start}\n## Selected engineering rules\n\nBefore planning or implementing a task, load and apply the applicable rules below from the repository root. Preserve existing instructions and ask the project owner to resolve any conflict before proceeding.\n\n${context}${rules.join('\n')}\n${end}\n`;
 }
 
 export function splitRuleBlock(path: string, content: string) {
@@ -21,7 +22,7 @@ export function splitRuleBlock(path: string, content: string) {
   const original = content.slice(0, index - 2);
   const suffix = content.slice(index - 2);
   const names = engineeringModules.filter(name => suffix.includes(rulePath(name)));
-  if (!names.length || suffix !== block(path, names)) throw new Error(`Review the customized engineering rule block in ${path} before proceeding.`);
+  if (!names.length || suffix !== block(path, names) && suffix !== block(path, names, true)) throw new Error(`Review the customized engineering rule block in ${path} before proceeding.`);
   return { original, names };
 }
 
@@ -38,7 +39,7 @@ export function ruleAdapters(project: Project, present = (path: string) => exist
   ].filter(path => path !== undefined);
 }
 
-export function planRuleActivation(project: Project, names: string[], read: (path: string) => string | null, paths = ruleAdapters(project)) {
+export function planRuleActivation(project: Project, names: string[], read: (path: string) => string | null, paths = ruleAdapters(project), includeContext = false) {
   if (!names.length || names.some(name => !engineeringModules.includes(name)) || new Set(names).size !== names.length) {
     throw new Error('Select existing modules: architecture security testing git workflows, or use rules activate all.');
   }
@@ -51,7 +52,8 @@ export function planRuleActivation(project: Project, names: string[], read: (pat
       throw new Error(`Review the existing Cursor rule scope in ${path} before activation.`);
     }
     const { original, names: active } = splitRuleBlock(path, before);
-    const after = original + block(path, engineeringModules.filter(name => active.includes(name) || names.includes(name)));
+    const hasContext = active.length > 0 && before === original + block(path, active, true);
+    const after = original + block(path, engineeringModules.filter(name => active.includes(name) || names.includes(name)), includeContext || hasContext);
     return before === after ? [] : [{ path, before, after }];
   });
 }

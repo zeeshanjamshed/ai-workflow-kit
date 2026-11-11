@@ -1,3 +1,4 @@
+import { diagnose } from './reports.ts';
 import { inspectGitPath } from './discovery.ts';
 import type { Project } from './discovery.ts';
 import { manifestPath, sha, statePath, templates, version } from './initialize.ts';
@@ -49,7 +50,7 @@ export function planQuickstart(project: Project, read: Read, installed?: Choices
     }
   }
   const paths = ruleAdapters(project, path => projected(path) !== null);
-  for (const edit of planRuleActivation(project, engineeringModules, projected, paths)) {
+  for (const edit of planRuleActivation(project, engineeringModules, projected, paths, true)) {
     edits.set(edit.path, { ...edit, before: edits.get(edit.path)?.before === null ? null : edit.before });
   }
   if (!installed) {
@@ -85,7 +86,9 @@ export function checkQuickstartPrivacy(project: Project, edits: Edit[], policy: 
 export function printQuickstart(project: Project, edits: Edit[], preserved: string[], policy: string, resumed: boolean) {
   console.log(`Quickstart: ${project.root} (${project.classification}, ${policy} tracking)`);
   if (project.workspaceMarkers.length || project.packageWorkspaces) console.log('  Workspace detected. Setup is scoped to the repository root.');
-  if (project.git.detected && project.git.dirty === undefined) console.log('  Git status could not be read.');
+  const { findings } = diagnose(project);
+  for (const finding of findings.slice(0, 3)) console.log(`  Check: ${finding}`);
+  if (findings.length > 3) console.log('  Run ai-setup doctor for the remaining findings.');
   if (resumed) console.log('Resume the saved quickstart plan:');
   for (const { path, before } of edits) console.log(`  ${before === null ? 'Add' : 'Link rules in'} ${path}`);
   if (preserved.length) console.log(`Keep ${preserved.length} existing files, including any customized modules or skills.`);

@@ -2,31 +2,38 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { delimiter, join, resolve } from 'node:path';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 const tar = resolve(pkg.name.replace(/^@/, '').replace('/', '-') + '-' + pkg.version + '.tgz');
 const root = mkdtempSync(join(tmpdir(), 'ai-package-'));
+const windows = process.platform === 'win32';
+const install = join(root, 'install');
+const bin = windows ? install : join(install, 'bin');
+const pathKey = Object.keys(process.env).find(key => key.toLowerCase() === 'path') ?? 'PATH';
+const env = { ...process.env, [pathKey]: bin + delimiter + process.env[pathKey] };
+
 function run(executable, args, cwd, input) {
-  const result = spawnSync(executable, args, { cwd, input, encoding: 'utf8', timeout: 30000 });
+  const result = spawnSync(executable, args, { cwd, input, env, encoding: 'utf8', timeout: 30000 });
   assert.equal(result.status, 0, result.error?.message ?? result.stderr);
   return result.stdout;
 }
 try {
   const project = join(root, 'project');
   mkdirSync(project);
-  run(process.execPath, [process.env.npm_execpath, 'install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', tar], root);
+  run(process.execPath, [process.env.npm_execpath, 'install', '--global', '--prefix', install,
+    '--offline', '--ignore-scripts', '--no-audit', '--no-fund', tar], root);
   run('git', ['init'], project);
-  const bin = join(root, 'node_modules', '.bin', 'ai-setup');
-  const windows = process.platform === 'win32';
-  assert.ok(existsSync(windows ? bin + '.cmd' : bin));
-  const exe = windows ? process.execPath : bin;
-  const prefix = windows ? [join(root, 'node_modules', pkg.name, pkg.bin['ai-setup'])] : [];
-  run(exe, [...prefix, 'doctor'], project);
-  run(exe, [...prefix, 'init', '--dry-run', '--tracking=tracked', '--agents=codex'], project);
+  const invoke = (args, input) => windows
+    ? run('cmd.exe', ['/d', '/c', 'ai-setup', ...args], project, input)
+    : run('ai-setup', args, project, input);
+  assert.equal(invoke(['--version']).trim(), pkg.version);
+  invoke(['doctor']);
+  invoke(['init', '--dry-run', '--tracking=tracked', '--agents=codex']);
   assert.equal(existsSync(join(project, '.ai')), false);
-  run(exe, [...prefix, 'init', '--tracking=tracked', '--agents=codex'], project, 'apply\n');
-  assert.equal(JSON.parse(run(exe, [...prefix, 'update', '--dry-run'], project)).edits.length, 0);
-  assert.deepEqual(JSON.parse(run(exe, [...prefix, 'coordinate', 'status'], project)), []);
+  assert.ok(JSON.parse(invoke(['onboard'])).project.root);
+  invoke(['init', '--tracking=tracked', '--agents=codex'], 'apply\n');
+  assert.equal(JSON.parse(invoke(['update', '--dry-run'])).edits.length, 0);
+  assert.deepEqual(JSON.parse(invoke(['coordinate', 'status'])), []);
   console.log('Offline package install and CLI smoke checks passed.');
 } finally { rmSync(root, { recursive: true, force: true }); }

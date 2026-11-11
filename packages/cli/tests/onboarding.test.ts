@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
-import { templates, sha } from '../src/initialize.ts';
+import { templates, sha, version } from '../src/initialize.ts';
 
 const cli = fileURLToPath(new URL('../src/main.ts', import.meta.url));
 
@@ -86,4 +86,45 @@ test('v0.3 manifest and original template hashes remain valid for updates', () =
   const result = run(['update', '--dry-run']);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /replace-with-bundled/);
+  const applied = run(['update'], 'apply\n');
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.equal(JSON.parse(readFileSync(join(root, '.ai/setup-manifest.json'), 'utf8')).version, version);
+  assert.equal(run(['rules', 'custom', 'testing'], 'apply\n').status, 0);
+  assert.equal(run(['rules', 'activate', 'testing'], 'apply\n').status, 0);
+  assert.equal(run(['onboard', 'install-skills', 'both'], 'apply\n').status, 0);
+  assert.match(run(['onboard', 'install-skills', 'both'], 'apply\n').stdout, /"status": "keep"/);
+}));
+
+test('approved activation connects selected project-owned rules to native entry points and rolls back safely', () => fixture((root, run) => {
+  const module = join(root, '.ai/rules/engineering-security.md');
+  const agents = join(root, 'AGENTS.md');
+  const claude = join(root, 'CLAUDE.md');
+  const original = '# Custom project instructions\r\nKeep my conventions.';
+  writeFileSync(agents, original);
+  const originalClaude = readFileSync(claude, 'utf8');
+  assert.equal(run(['rules', 'custom', 'security'], 'apply\n').status, 0);
+  writeFileSync(module, '# Custom security\nCheck the authentication boundary.\n');
+  const inventory = () => JSON.parse(run(['rules']).stdout).modules.find((item: { name: string }) => item.name === 'security');
+  assert.equal(inventory().selected, false);
+  const command = ['rules', 'activate', 'security'];
+  assert.equal(run([...command, '--dry-run'], 'apply\n').status, 0);
+  assert.equal(run(command, 'no\n').status, 0);
+  assert.equal(readFileSync(agents, 'utf8'), original);
+  const applied = run(command, 'apply\n');
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.ok(readFileSync(agents, 'utf8').startsWith(original));
+  assert.match(readFileSync(agents, 'utf8'), /Before planning[\s\S]*\.ai\/rules\/engineering-security\.md/);
+  assert.match(readFileSync(claude, 'utf8'), /@\.ai\/rules\/engineering-security\.md/);
+  assert.deepEqual(inventory().selectedBy, ['AGENTS.md', 'CLAUDE.md']);
+  assert.equal(inventory().provenance, 'project-owned');
+  assert.match(run(command, 'apply\n').stdout, /"edits": \[\]/);
+  assert.equal(JSON.parse(run(['update', '--dry-run']).stdout).edits.length, 0);
+  const id = applied.stdout.match(/Backup ID: ([\da-f-]+)/)?.[1];
+  assert.ok(id);
+  const rollback = run(['rollback', id], 'apply\n');
+  assert.equal(rollback.status, 0, rollback.stderr);
+  assert.equal(readFileSync(agents, 'utf8'), original);
+  assert.equal(readFileSync(claude, 'utf8'), originalClaude);
+  assert.equal(inventory().selected, false);
+  assert.equal(readFileSync(module, 'utf8'), '# Custom security\nCheck the authentication boundary.\n');
 }));

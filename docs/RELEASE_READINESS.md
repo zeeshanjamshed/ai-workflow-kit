@@ -22,7 +22,7 @@ Live agent verification remains pending. A fresh read-only Codex run failed befo
 
 ## v0.4.2 one-command quickstart
 
-Quickstart adds a combined dry-run, one approval, native adapter activation, and an ignored journal with recovery and rollback. Guided project analysis and knowledge approval are separate. Automated checks cover custom configuration preservation and safe repeats. Authenticated fresh-session agent behavior remains pending.
+Quickstart adds a combined dry-run, one approval, native adapter activation, and an ignored journal with recovery and rollback. Guided project analysis and knowledge approval are separate. Strict TypeScript checks, all 39 tests, packaging, and offline CLI installation passed. npm audit reported zero vulnerabilities. Fixtures cover fresh and custom setups, declining approval, interrupted recovery, rollback, monorepo root targeting, and safe repeats. A disposable project initialized using the v0.4.1 tarball kept its original manifest through quickstart and proposed no edits on rerun. Authenticated fresh-session agent behavior remains pending.
 
 ## Candidate checks
 

@@ -1,3 +1,4 @@
+import { engineeringModules, isRuleBlockEdit, planRuleActivation, rulePath } from './rule-activation.ts';
 import { randomUUID } from 'node:crypto';
 import { closeSync, lstatSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -123,7 +124,7 @@ function replace(root: string, edit: Edit): void {
 function parseTransaction(source: string, root: string): Transaction {
   const raw = readObject(source);
   if (!raw || typeof raw.id !== 'string' || !/^[a-f\d-]{36}$/.test(raw.id) ||
-      typeof raw.action !== 'string' || !['update', 'repair', 'pin', 'rollback'].includes(raw.action) ||
+      typeof raw.action !== 'string' || !['update', 'repair', 'pin', 'rollback', 'activate-rules'].includes(raw.action) ||
       !Array.isArray(raw.edits) || raw.edits.length > 20 || !raw.edits.length) throw new Error('Invalid update journal.');
   const allowed = new Map<string, Set<string>>();
   const current = manifest(read(root, manifestPath));
@@ -149,6 +150,8 @@ function parseTransaction(source: string, root: string): Transaction {
             json(candidate.managed.map(x => x.path)) !== json(current.managed.map(x => x.path)) ||
             json(candidate.raw.preserved) !== json(current.raw.preserved)) throw new Error('Journal changes setup ownership or privacy.');
       }
+    } else if (['activate-rules', 'rollback'].includes(raw.action) && isRuleBlockEdit(path, before, after)) {
+      continue;
     } else if (!allowed.has(path) ||
       [before, after].some(text => text !== null && (typeof text !== 'string' || !allowed.get(path)!.has(text)))) {
       throw new Error('Journal contains an unmanaged file or unknown content.');
@@ -190,7 +193,7 @@ export async function update(project: Project, action: string, args: string[]): 
   const { root } = project;
   const dry = args.includes('--dry-run');
   const values = args.filter(arg => arg !== '--dry-run');
-  if (args.length !== values.length + Number(dry) || values.length > 1 ||
+  if (args.length !== values.length + Number(dry) || action !== 'activate-rules' && values.length > 1 ||
       action === 'update' && values.length && !/^--version=\d+\.\d+\.\d+$/.test(values[0]) ||
       action === 'repair' && values.length ||
       action === 'pin' && (values.length !== 1 || !/^(none|\d+\.\d+\.\d+)$/.test(values[0])) ||
@@ -199,6 +202,7 @@ export async function update(project: Project, action: string, args: string[]): 
   const pending = backupDir + '/.pending.json';
   const saved = read(root, pending);
   let transaction: Transaction;
+  let activationInputs: { path: string; content: string | null }[] = [];
   if (saved !== null) {
     if (action !== 'update' || values.length) throw new Error('A transaction is pending. Run update to review and resume it.');
     transaction = parseTransaction(saved, root);
@@ -212,6 +216,12 @@ export async function update(project: Project, action: string, args: string[]): 
       if (original.id !== values[0]) throw new Error('Backup ID does not match.');
       edits = original.edits.map(edit => ({ path: edit.path, before: edit.after, after: edit.before }));
       console.log(json({ action, backup: original.id, edits }));
+    } else if (action === 'activate-rules') {
+      const names = values.length === 1 && values[0] === 'all' ? engineeringModules : values;
+      edits = planRuleActivation(project, names, path => read(root, path));
+      activationInputs = names.map(name => ({ path: rulePath(name), content: read(root, rulePath(name)) }));
+      console.log(json({ action, modules: activationInputs, edits,
+        review: 'Review rule contents and existing instructions for conflicts before approval.' }));
     } else {
       const proposal = plan(root, action, values[0]?.replace(/^--version=/, ''));
       console.log(json({ action, bundle: version, ...proposal }));
@@ -223,9 +233,21 @@ export async function update(project: Project, action: string, args: string[]): 
   }
 
   parseTransaction(json(transaction), root);
+  function checkRulePrivacy() {
+    if (manifest(read(root, manifestPath)).choices.policy === 'local-only' && project.git.detected &&
+        transaction.edits.some(({ path, before, after }) => isRuleBlockEdit(path, before, after) &&
+          (inspectGitPath(root, path, 'tracked') !== false || inspectGitPath(root, path, 'ignored') !== true))) {
+      throw new Error('Local-only activation requires ignored, untracked instruction entry points.');
+    }
+  }
+  checkRulePrivacy();
   verifyEdits(root, transaction.edits, saved !== null);
   checkBackupPrivacy(project);
   if (dry || !await approve()) return;
+  if (activationInputs.some(({ path, content }) => read(root, path) !== content)) {
+    throw new Error('An engineering module changed after preview. Review a fresh plan.');
+  }
+  checkRulePrivacy();
   verifyEdits(root, transaction.edits, saved !== null);
   checkBackupPrivacy(project);
   install(root, { path: backupIgnore, content: '*\n' });

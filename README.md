@@ -17,6 +17,7 @@ A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, a
 
 | Command | Behavior |
 | --- | --- |
+| `ai-setup quickstart` | Preview and apply the complete recommended setup with one approval |
 | `ai-setup init` | Discover a project, propose a safe setup, and apply approved steps |
 | `ai-setup init --dry-run` | Preview without modifying the project |
 | `ai-setup update` | Compare bundled defaults with project files and apply approved changes |
@@ -33,6 +34,22 @@ npm test
 After installing the CLI, run `ai-setup doctor` from the target project. Both commands emit JSON. Doctor exits with code 1 if it finds issues or inspection fails. Unsupported commands exit with code 2.
 
 Discovery reports local signals such as Git state, project markers, declared framework versions, and agent paths. The dry run lists candidate paths and flags existing files for review. Doctor checks common instruction entry points, basic manifest validity, and local Markdown links. Confirm agent behavior, rule conflicts, and project-specific context separately. Updates use the baseline bundled with the installed CLI.
+
+## One-command quickstart
+
+[Install the CLI](#install-the-cli-for-agent-sessions), then run this from the project:
+
+```sh
+ai-setup quickstart
+```
+
+Review the repository root, tracking policy, paths to add, and existing instruction files that will receive a rule section. Type `apply` once to approve the setup. Use `ai-setup quickstart --dry-run` for the same preview without writing anything. New setups default to mixed tracking, which keeps knowledge, decisions, and handoffs Git-ignored. Existing setups keep their tracking policy and installed baseline.
+
+Quickstart sets up missing shared files, the five recommended engineering modules, and native instruction entry points for Claude Code, Codex, and Cursor. It installs guided onboarding skills for Claude Code and Codex. Existing custom rules, skills, knowledge, and instruction text are preserved. Resolve semantic instruction conflicts before approving. A conflicting activation section or privacy policy blocks the operation.
+
+If interrupted, rerun `ai-setup quickstart` to review and approve the saved plan. A successful run prints a backup ID. `ai-setup rollback <backup-id>` previews reversal and refuses if any affected file changed afterward. Review rollback carefully because it removes kit-created files from that run. Individual setup commands are still available below.
+
+Start a fresh Claude Code or Codex session in the project and run the **guided-project-onboarding** skill. The agent examines the actual code and proposes useful knowledge. Saving that knowledge needs separate approval.
 
 ## Initialize a project
 
@@ -54,12 +71,12 @@ Initialization creates missing files and preserves existing instructions, skills
 
 From an initialized project, use `ai-setup update --dry-run` to compare the installed baseline, local files, and the current bundled version. The update checks manifest hashes and works offline. It replaces an unchanged kit file when the bundled default changes and preserves local edits when that default stays the same. If both sides changed, or a managed file is missing, the update stops for review. Existing unmanaged rules, skills, knowledge, and decisions stay in place.
 
-- `ai-setup update` shows the plan and waits for `apply`. Use `--version=0.4.1` to select the current bundled release explicitly.
+- `ai-setup update` shows the plan and waits for `apply`. Use `--version=0.4.2` to select the current bundled release explicitly.
 - `ai-setup pin <version>` pins the installed or current bundled version. Use `ai-setup pin none` to unpin. Both require approval.
 - `ai-setup repair` can restore missing managed files from the installed baseline after approval. It preserves existing files.
 - `ai-setup rollback <backup-id>` previews the inverse operation and requires approval. It refuses to overwrite subsequent edits. If interrupted, rerun `ai-setup update` to review and resume the pending operation.
 
-Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, 0.4.0, and 0.4.1. It upgrades to its own version and leaves version downgrades to rollback.
+Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.4.1, and 0.4.2. It upgrades to its own version and leaves version downgrades to rollback.
 
 ### Install the CLI for agent sessions
 
@@ -68,7 +85,7 @@ Use Node.js 22.18 or newer. In a checkout of the reviewed kit commit, build the 
 ```sh
 npm ci --ignore-scripts
 npm pack
-npm install --global --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.1.tgz
+npm install --global --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.2.tgz
 ai-setup --version
 ```
 

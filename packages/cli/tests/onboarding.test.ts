@@ -176,7 +176,11 @@ test('quickstart keeps existing custom adapters, rules and skills and rejects co
   const result = run(['quickstart'], 'apply\n');
   assert.equal(result.status, 0, result.stderr);
   for (const path of [cursor, skill, security]) assert.equal(readFileSync(path, 'utf8'), custom);
-  for (const path of [override, customClaude]) assert.ok(readFileSync(path, 'utf8').startsWith(custom));
+  for (const path of [override, customClaude]) {
+    const contents = readFileSync(path, 'utf8');
+    assert.ok(contents.startsWith(custom));
+    assert.match(contents, /\.ai\/rules\/permissions\.md/);
+  }
   assert.match(readFileSync(join(root, '.cursor/rules/ai-workflow-kit.mdc'), 'utf8'), /alwaysApply: true[\s\S]*engineering-testing/);
   assert.equal(readFileSync(join(root, '.ai/setup-manifest.json'), 'utf8'), originalManifest);
   assert.match(run(['quickstart']).stdout, /already complete/);

@@ -30,8 +30,7 @@ export function isRuleBlockEdit(path: string, before: unknown, after: unknown): 
     splitRuleBlock(path, before).original === splitRuleBlock(path, after).original;
 }
 
-export function ruleAdapters(project: Project): string[] {
-  const present = (path: string) => exists(safePath(project.root, path));
+export function ruleAdapters(project: Project, present = (path: string) => exists(safePath(project.root, path))): string[] {
   return [
     ['AGENTS.override.md', 'AGENTS.md'].find(present),
     ['CLAUDE.md', '.claude/CLAUDE.md'].find(present),
@@ -39,12 +38,11 @@ export function ruleAdapters(project: Project): string[] {
   ].filter(path => path !== undefined);
 }
 
-export function planRuleActivation(project: Project, names: string[], read: (path: string) => string | null) {
+export function planRuleActivation(project: Project, names: string[], read: (path: string) => string | null, paths = ruleAdapters(project)) {
   if (!names.length || names.some(name => !engineeringModules.includes(name)) || new Set(names).size !== names.length) {
     throw new Error('Select existing modules: architecture security testing git workflows, or use rules activate all.');
   }
   for (const name of names) if (!read(rulePath(name))?.trim()) throw new Error(`Missing or empty engineering module: ${rulePath(name)}`);
-  const paths = ruleAdapters(project);
   if (!paths.length) throw new Error('Set up a supported instruction entry point before activating engineering rules.');
   return paths.flatMap(path => {
     const before = read(path);

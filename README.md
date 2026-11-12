@@ -2,7 +2,7 @@
 
 A reusable, project-local AI engineering setup for Claude Code, Codex, Cursor, and other compatible coding agents.
 
-> **Status:** Work in progress. The CLI is available from this repository for read-only checks, previews, approved initialization, and safe bundled updates. The npm release is pending.
+> **Status:** v0.4.2 is [available on npm](https://www.npmjs.com/package/@zeeshanjamshed/ai-workflow-kit). The stable v1.0.0 release is on hold.
 
 ## What we're building
 
@@ -37,13 +37,13 @@ Discovery reports local signals such as Git state, project markers, declared fra
 
 ## One-command quickstart
 
-[Install the CLI](#install-the-cli-for-agent-sessions), then run this from the project:
+With Node.js 22.18 or newer, run this from the project:
 
 ```sh
-ai-setup quickstart
+npx -y @zeeshanjamshed/ai-workflow-kit quickstart
 ```
 
-Review the repository root, tracking policy, paths to add, and existing instruction files that will receive a rule section. Type `apply` once to approve the setup. Use `ai-setup quickstart --dry-run` for the same preview without writing anything. New setups default to mixed tracking, which keeps knowledge, decisions, and handoffs Git-ignored. Existing setups keep their tracking policy and installed baseline.
+Review the repository root, tracking policy, paths to add, and existing instruction files that will receive a rule section. Type `apply` once to approve the setup. Add `--dry-run` for the same preview without project writes. The npm `-y` flag answers npm’s install prompt. Quickstart still waits for `apply`. New setups default to mixed tracking, which keeps knowledge, decisions, and handoffs Git-ignored. Existing setups keep their tracking policy and installed baseline.
 
 Quickstart sets up missing shared files, the five recommended engineering modules, and native instruction entry points for Claude Code, Codex, and Cursor. It installs guided onboarding skills for Claude Code and Codex. Existing custom rules, skills, knowledge, and instruction text are preserved. Resolve semantic instruction conflicts before approving. A conflicting activation section or privacy policy blocks the operation.
 
@@ -78,19 +78,11 @@ From an initialized project, use `ai-setup update --dry-run` to compare the inst
 
 Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.4.1, and 0.4.2. It upgrades to its own version and leaves version downgrades to rollback.
 
-### Use npm after publication
+### Optional global installation
 
-Once the package is published to npm, run this from the target project:
+Run `npm install --global @zeeshanjamshed/ai-workflow-kit`, then use `ai-setup quickstart` from your project. A global install keeps `ai-setup` available for later commands and agent sessions.
 
-```sh
-npx -y @zeeshanjamshed/ai-workflow-kit quickstart
-```
-
-The registry command requires publication first. The npm `-y` flag answers npm's package-install prompt. Quickstart still previews project changes and waits for you to type `apply`. Add `--dry-run` after `quickstart` for a read-only project preview. npm may download and cache the CLI.
-
-For repeated use after publication, run `npm install --global @zeeshanjamshed/ai-workflow-kit`, then use `ai-setup quickstart` from your project. Both paths require Node.js 22.18 or newer.
-
-### Install the CLI for agent sessions
+### Local development and offline installation
 
 Use Node.js 22.18 or newer. In a checkout of the reviewed kit commit, build the local tarball and install it once with the npm used by your agent shell.
 
@@ -103,7 +95,7 @@ ai-setup --version
 
 npm copies the compiled CLI into its global prefix. You can move or remove the build checkout after installation. On macOS and Linux the launcher is under `$(npm prefix -g)/bin`; on Windows it is directly under the directory printed by `npm prefix -g`. If `ai-setup --version` fails, put that executable directory on your user PATH or use the Node version manager's active environment. Restart Claude Code or Codex from a terminal where the version check succeeds. If you use multiple profiles or launch agents from an IDE, repeat the version check in each launch environment. A Node version manager may keep global packages separate per Node version.
 
-Use the tarball flow in place of the previously unsuccessful one-time GitHub package invocation. The installed CLI has no runtime dependencies and works offline. Future kit builds can be installed the same way. The v0.4.0 baseline remains bundled so existing setups can preview upgrades and use their backups.
+The installed CLI has no runtime dependencies and works offline. Future kit builds can be installed the same way. The v0.4.0 baseline remains bundled so existing setups can preview upgrades and use their backups.
 
 ## Guided onboarding and engineering rules
 
@@ -156,4 +148,4 @@ Read the [master specification](docs/SPECIFICATION.md) for the approved requirem
 
 Implementation will be incremental and reviewed before each stage. The first stable `v1.0.0` release will follow testing across new, existing, and AI-configured projects.
 
-The repository is licensed under the [MIT License](LICENSE). npm publication requires separate owner approval.
+The repository is licensed under the [MIT License](LICENSE). See [Releasing AI Workflow Kit](docs/RELEASING.md) for versioning, checks, and owner approval before publishing future versions.

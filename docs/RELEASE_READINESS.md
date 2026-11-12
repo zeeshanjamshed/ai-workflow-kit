@@ -1,6 +1,6 @@
 # Release readiness
 
-**Decision: hold v1.0.0.** The v0.4.2 package is a verified local pilot candidate. npm publication, a stable release tag, and general distribution remain gated. The owner approved public npm accessibility and MIT licensing with copyright © 2026 Zeeshan Jamshed. Approval to publish is pending.
+**Decision: hold v1.0.0.** v0.4.2 is publicly available on npm under the MIT License with copyright © 2026 Zeeshan Jamshed. The stable release and its tag remain gated.
 
 ## Evidence against the specification
 
@@ -9,8 +9,8 @@
 | 1–4 | Automated fixtures cover fresh, mature, existing-AI, and monorepo initialization; custom-file preservation; reruns; and interruption recovery. Guided onboarding proposes evidence-backed project knowledge. In the owner-reported Mac pilot, Claude reviewed an established project and recognized existing knowledge without overwriting it. Full v0.4.2 onboarding from a fresh setup remains to be observed. |
 | 5–8 | Automated fixtures cover read-only checks, approvals, feature/debug/review/high-risk scenarios, and handoffs. On the owner's Mac, fresh Claude and Codex sessions using v0.4.1 reported loading all five engineering modules and the onboarding skill. Claude proposed a scoped documentation change and then performed it following approval; Codex independently verified the result without writing. An earlier disposable test demonstrated Codex-to-Claude task resumption. These are manual, user-transcribed observations, not proof of native permission enforcement or coverage of all work types. Cursor, stronger negative-approval/high-risk tests, and fresh-session agent use after v0.4.2 quickstart remain open. |
 | 9–11 | Automated fixtures cover coordination in worktrees, isolation across clones, updates, conflicts, rollback, pins, interruptions, and skill discovery. The Mac pilot confirmed discovery of both installed onboarding skill paths and reported native rule loading. Skill precedence when custom instructions conflict, live concurrent-agent coordination, and an actual Mac rollback are not yet exercised. |
-| 12 | CI and package smoke tests run on Linux, macOS, and Windows with Node.js 22 and 24; all six hosted jobs passed on the final v0.4.2 commit. On the owner's Mac (Node.js 24.14.1), v0.4.1 and v0.4.2 reviewed tarballs installed globally offline and `ai-setup --version` resolved correctly. A one-time GitHub-based npx invocation failed earlier. The documented persistent tarball install succeeds; a one-time registry/distribution experience is not yet verified. |
-| 13–14 | Strict TypeScript checks, 39 automated tests, packaging, offline installation, npm audit with zero reported vulnerabilities, and hosted CI passed for v0.4.2. Finish a concise end-user walkthrough and obtain explicit owner sign-off for publication. |
+| 12 | CI and package smoke tests run on Linux, macOS, and Windows with Node.js 22 and 24; all six hosted jobs passed on the final v0.4.2 commit. On the owner's Mac (Node.js 24.14.1), v0.4.1 and v0.4.2 reviewed tarballs installed globally offline and `ai-setup --version` resolved correctly. A one-time GitHub-based npx invocation failed earlier. The documented persistent tarball install succeeds; the owner verified the pinned public npm version command. A registry-backed Quickstart dry run passed in a disposable Git checkout without project writes. |
+| 13–14 | Strict TypeScript checks, 39 automated tests, packaging, offline installation, npm audit with zero reported vulnerabilities, and hosted CI passed for v0.4.2. Finish a concise end-user walkthrough and obtain explicit owner sign-off for the stable release. |
 
 [Phase 8 fix matrix](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/42870861645) · [v0.4.0 onboarding matrix](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/43011069944)
 
@@ -37,16 +37,15 @@ The owner provided terminal transcripts and Claude/Codex responses from an exist
 
 **Limits:** Agent versions, exact sandbox settings, and native file-permission events were not fully captured. There was no fresh authenticated Claude/Codex run following the v0.4.2 quickstart activation.
 
-## npm distribution preparation
+## v0.4.2 npm distribution
 
-The v0.4.2 package is configured for public npm access under the MIT License. The executable, Node.js requirement, and compiled-file allowlist are unchanged. The README documents the post-publication registry command and the existing offline tarball installation. The preparation checks passed strict TypeScript, all 39 tests, and an isolated offline install that ran the npm-installed `ai-setup` launcher. npm audit reported zero vulnerabilities. The tarball contains 12 compiled CLI modules, `package.json`, `README.md`, and `LICENSE`. The inventory matched the expected files, and a scan found no common credential patterns. Registry installation and the one-time npm command remain pending publication.
+The v0.4.2 package is configured for public npm access under the MIT License. The executable, Node.js requirement, and compiled-file allowlist are unchanged. The README documents the public npm command and offline tarball installation. The preparation checks passed strict TypeScript, all 39 tests, and an isolated offline install that ran the npm-installed `ai-setup` launcher. npm audit reported zero vulnerabilities. The tarball contains 12 compiled CLI modules, `package.json`, `README.md`, and `LICENSE`. The inventory matched the expected files, and a scan found no common credential patterns. The owner confirmed that `npx -y @zeeshanjamshed/ai-workflow-kit@0.4.2 --version` returned `0.4.2` after the registry became responsive. A separate registry check returned v0.4.2 and its integrity value. The pinned Quickstart dry run left a disposable checkout clean. [Public package](https://www.npmjs.com/package/@zeeshanjamshed/ai-workflow-kit/v/0.4.2).
 
-## Remaining public-release gates
+## Remaining v1.0.0 gates
 
 1. Run a reproducible v0.4.2 live-agent acceptance pass (normal task, no-approval boundary, bounded approval, higher-risk safeguard behavior, and instruction/skill precedence). Test Cursor in a supported configuration or explicitly document what is not supported. Treat native agent sandbox and permission controls as the enforcement layer, not prompts alone.
-2. Decide what one-time package use should mean for v1.0.0 and verify the supported installation path. The GitHub npx attempt failed, while offline tarball installation worked.
-3. Confirm npm account access to the scope and obtain explicit approval to publish v0.4.2. Once published, verify the registry install and one-time quickstart in a disposable checkout.
-4. Complete the end-user walkthrough and final release checklist. Obtain separate explicit owner approvals for the stable version, npm publication, and any release tag. Approval to document the pilot does not authorize those actions.
+2. Verify the supported installation path for the v1.0.0 candidate in a disposable checkout.
+3. Complete the end-user walkthrough and final release checklist. Obtain separate explicit owner approvals for the stable version, npm publication, and any release tag. Follow the [maintainer release guide](RELEASING.md) for future versions.
 
 ## Candidate checks
 

@@ -78,9 +78,21 @@ From an initialized project, use `ai-setup update --dry-run` to compare the inst
 
 Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.4.1, and 0.4.2. It upgrades to its own version and leaves version downgrades to rollback.
 
+### Use npm after publication
+
+Once the package is published to npm, run this from the target project:
+
+```sh
+npx -y @zeeshanjamshed/ai-workflow-kit quickstart
+```
+
+The registry command requires publication first. The npm `-y` flag answers npm's package-install prompt. Quickstart still previews project changes and waits for you to type `apply`. Add `--dry-run` after `quickstart` for a read-only project preview. npm may download and cache the CLI.
+
+For repeated use after publication, run `npm install --global @zeeshanjamshed/ai-workflow-kit`, then use `ai-setup quickstart` from your project. Both paths require Node.js 22.18 or newer.
+
 ### Install the CLI for agent sessions
 
-Use Node.js 22.18 or newer. In a checkout of the reviewed kit commit, build the private tarball and install it once with the npm used by your agent shell.
+Use Node.js 22.18 or newer. In a checkout of the reviewed kit commit, build the local tarball and install it once with the npm used by your agent shell.
 
 ```sh
 npm ci --ignore-scripts
@@ -144,4 +156,4 @@ Read the [master specification](docs/SPECIFICATION.md) for the approved requirem
 
 Implementation will be incremental and reviewed before each stage. The first stable `v1.0.0` release will follow testing across new, existing, and AI-configured projects.
 
-The repository is public, but **no open-source license has been selected yet**. We will decide that before a public release.
+The repository is licensed under the [MIT License](LICENSE). npm publication requires separate owner approval.

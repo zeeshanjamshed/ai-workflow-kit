@@ -1,7 +1,29 @@
 {
   "name": "@zeeshanjamshed/ai-workflow-kit",
   "version": "0.4.2",
-  "private": true,
+  "description": "Approval-first CLI for setting up shared project rules, onboarding skills, and handoffs for coding agents.",
+  "author": "Zeeshan Jamshed",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeeshanjamshed/ai-workflow-kit.git"
+  },
+  "homepage": "https://github.com/zeeshanjamshed/ai-workflow-kit#readme",
+  "bugs": {
+    "url": "https://github.com/zeeshanjamshed/ai-workflow-kit/issues"
+  },
+  "keywords": [
+    "ai-workflow",
+    "coding-agents",
+    "cli",
+    "project-setup",
+    "claude-code",
+    "codex",
+    "cursor"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "engines": {
     "node": ">=22.18.0"

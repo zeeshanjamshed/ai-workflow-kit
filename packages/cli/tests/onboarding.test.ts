@@ -222,3 +222,122 @@ test('quickstart from a nested package changes only the repository-root setup', 
   assert.equal(readFileSync(join(nested, 'AGENTS.md'), 'utf8'), '# Package-specific rules\n');
   assert.match(run(['quickstart']).stdout, /already complete/);
 }));
+
+test('interactive minimal installs safety and optional onboarding without engineering modules', () => fixture((root, run) => {
+  const skill = join(root, '.agents/skills/guided-project-onboarding/SKILL.md');
+  const rules = join(root, 'AGENTS.md');
+  const original = readFileSync(rules, 'utf8');
+  const result = run(['setup'], 'minimal\nyes\napply\n');
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout.match(/Type apply/g)?.length, 1);
+  assert.ok(existsSync(skill));
+  assert.ok(readFileSync(rules, 'utf8').startsWith(original));
+  assert.match(readFileSync(rules, 'utf8'), /Get explicit approval before writes/);
+  assert.equal(existsSync(join(root, '.ai/rules/engineering-git.md')), false);
+  assert.equal(existsSync(join(root, '.ai/rules/full/README.md')), false);
+  assert.match(run(['setup', '--preset=minimal', '--onboarding']).stdout, /already complete/);
+}));
+
+test('setup quickstart can omit onboarding, while legacy quickstart still installs it', () => fixture((root, run) => {
+  const skill = join(root, '.claude/skills/guided-project-onboarding/SKILL.md');
+  const result = run(['setup', '--preset=quickstart', '--no-onboarding'], 'apply\n');
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(existsSync(skill), false);
+  assert.ok(existsSync(join(root, '.ai/rules/engineering-git.md')));
+  assert.equal(run(['quickstart'], 'apply\n').status, 0);
+  assert.ok(existsSync(skill));
+}));
+
+test('Full upgrades Quickstart with one reversible rule section and retains customizations', () => fixture((root, run) => {
+  assert.equal(run(['quickstart'], 'apply\n').status, 0);
+  const agent = join(root, 'AGENTS.md');
+  const original = readFileSync(agent, 'utf8');
+  const custom = join(root, '.ai/rules/engineering-git.md');
+  writeFileSync(custom, '# Custom Git conventions\n');
+  const full = join(root, '.ai/rules/full/README.md');
+  assert.equal(run(['full', '--dry-run'], 'apply\n').status, 0);
+  assert.equal(run(['full'], 'no\n').status, 0);
+  assert.equal(existsSync(full), false);
+  assert.equal(readFileSync(agent, 'utf8'), original);
+  const applied = run(['full'], 'apply\n');
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.ok(existsSync(full));
+  assert.ok(existsSync(join(root, '.ai/workflows/risky-change.md')));
+  const active = readFileSync(agent, 'utf8');
+  assert.match(active, /\.ai\/rules\/full\/README\.md/);
+  assert.match(active, /engineering-git\.md/);
+  assert.doesNotMatch(active, /engineering-testing\.md/);
+  assert.equal(active.match(/<!-- ai-workflow-kit:engineering-rules -->/g)?.length, 1);
+  assert.match(run(['full']).stdout, /already complete/);
+  assert.match(run(['quickstart']).stdout, /already complete/);
+  const id = applied.stdout.match(/Backup ID: ([\da-f-]+)/)?.[1];
+  assert.ok(id);
+  const undone = run(['rollback', id], 'apply\n');
+  assert.equal(undone.status, 0, undone.stderr);
+  assert.equal(readFileSync(agent, 'utf8'), original);
+  assert.equal(readFileSync(custom, 'utf8'), '# Custom Git conventions\n');
+  assert.equal(existsSync(full), false);
+}));
+
+test('Full preserves conflicting project workflows and applies no other changes', () => fixture((root, run) => {
+  mkdirSync(join(root, '.ai/workflows'), { recursive: true });
+  const workflow = join(root, '.ai/workflows/feature.md');
+  writeFileSync(workflow, '# Our feature workflow\n');
+  const prior = readFileSync(join(root, 'AGENTS.md'), 'utf8');
+  const result = run(['full', '--onboarding'], 'apply\n');
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Existing Full Engineering file differs/);
+  assert.equal(readFileSync(workflow, 'utf8'), '# Our feature workflow\n');
+  assert.equal(readFileSync(join(root, 'AGENTS.md'), 'utf8'), prior);
+  assert.equal(existsSync(join(root, '.agents/skills')), false);
+}));
+
+test('Full runs on a fresh project and resumes from a saved journal', () => fixture((root, run) => {
+  rmSync(join(root, '.ai'), { recursive: true });
+  const result = run(['full', '--onboarding'], 'apply\n');
+  assert.equal(result.status, 0, result.stderr);
+  const id = result.stdout.match(/Backup ID: ([\da-f-]+)/)?.[1];
+  assert.ok(id);
+  const backups = join(root, '.ai/update-backups');
+  const pending = join(backups, '.pending.json');
+  writeFileSync(pending, readFileSync(join(backups, id + '.json'), 'utf8'));
+  const path = join(root, '.ai/workflows/debugging.md');
+  rmSync(path);
+  const preview = run(['setup', '--dry-run'], 'apply\n');
+  assert.equal(preview.status, 0, preview.stderr);
+  assert.match(preview.stdout, /Resume/);
+  assert.equal(existsSync(path), false);
+  const resumed = run(['setup'], 'apply\n');
+  assert.equal(resumed.status, 0, resumed.stderr);
+  assert.ok(existsSync(path));
+  assert.equal(existsSync(pending), false);
+  assert.match(resumed.stdout, /guided-project-onboarding/);
+}));
+
+test('Full customized modules survive repeats and rollback refuses later edits', () => fixture((root, run) => {
+  const applied = run(['full'], 'apply\n');
+  assert.equal(applied.status, 0, applied.stderr);
+  const path = join(root, '.ai/rules/full/engineering.md');
+  writeFileSync(path, readFileSync(path, 'utf8') + '\nProject-specific architecture exception.\n');
+  assert.match(run(['full']).stdout, /already complete/);
+  const id = applied.stdout.match(/Backup ID: ([\da-f-]+)/)?.[1];
+  assert.ok(id);
+  assert.equal(run(['rollback', id], 'apply\n').status, 1);
+  assert.match(readFileSync(path, 'utf8'), /Project-specific architecture exception/);
+}));
+
+test('Full respects nested Claude entry points and includes all module links', () => fixture((root, run) => {
+  const prior = '# Existing nested Claude instructions\n';
+  rmSync(join(root, '.ai'), { recursive: true });
+  rmSync(join(root, 'CLAUDE.md'));
+  mkdirSync(join(root, '.claude'), { recursive: true });
+  writeFileSync(join(root, '.claude/CLAUDE.md'), prior);
+  const applied = run(['full', '--onboarding'], 'apply\n');
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.equal(existsSync(join(root, 'CLAUDE.md')), false);
+  assert.ok(readFileSync(join(root, '.claude/CLAUDE.md'), 'utf8').startsWith(prior));
+  assert.match(readFileSync(join(root, '.claude/CLAUDE.md'), 'utf8'), /@\.\.\/\.ai\/rules\/full\/README\.md/);
+  const index = readFileSync(join(root, '.ai/rules/full/README.md'), 'utf8');
+  assert.match(index, /behavior\.md/);
+  assert.match(index, /risky-change\.md/);
+}));

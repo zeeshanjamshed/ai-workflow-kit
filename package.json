@@ -1,6 +1,6 @@
 {
   "name": "@zeeshanjamshed/ai-workflow-kit",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Approval-first CLI for setting up shared project rules, onboarding skills, and handoffs for coding agents.",
   "author": "Zeeshan Jamshed",
   "license": "MIT",

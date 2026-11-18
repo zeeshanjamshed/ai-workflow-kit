@@ -3,15 +3,16 @@ import { discover } from './discovery.ts';
 import { diagnose, preview } from './reports.ts';
 import { realpathSync } from 'node:fs';
 import { discoverSkills, resumeContext } from './context.ts';
+import { setup } from './setup.ts';
 import { update } from './update.ts';
 import { onboard } from './onboarding.ts';
 import { coordinate } from './coordination.ts';
 import { initialize, parseChoices, version } from './initialize.ts';
 
-const usage = 'Usage: ai-setup quickstart [--dry-run] | ai-setup doctor | ai-setup skills | ai-setup context [task-id] | ai-setup init [--dry-run] [--tracking=POLICY --agents=LIST] | ai-setup update [--dry-run] | ai-setup repair | ai-setup pin VERSION | ai-setup rollback ID | ai-setup coordinate ACTION | ai-setup onboard [save|install-skills] | ai-setup rules [minimal|recommended|custom|activate]';
+const usage = 'Usage: ai-setup setup [--preset=PRESET] [--onboarding|--no-onboarding] [--tracking=POLICY] [--dry-run] | ai-setup full [--onboarding] [--dry-run] | ai-setup quickstart [--dry-run] | ai-setup doctor | ai-setup skills | ai-setup context [task-id] | ai-setup init [--dry-run] [--tracking=POLICY --agents=LIST] | ai-setup update [--dry-run] | ai-setup repair | ai-setup pin VERSION | ai-setup rollback ID | ai-setup coordinate ACTION | ai-setup onboard [save|install-skills] | ai-setup rules [minimal|recommended|custom|activate]';
 const [command = '', ...args] = process.argv.slice(2);
 
-const operations = ['quickstart', 'update', 'repair', 'pin', 'rollback'];
+const operations = ['setup', 'full', 'quickstart', 'update', 'repair', 'pin', 'rollback'];
 
 if (command === '--version' && !args.length) {
   console.log(version);
@@ -27,6 +28,8 @@ if (command === '--version' && !args.length) {
       await onboard(project, command, args);
     } else if (command === 'coordinate') {
       await coordinate(project, args);
+    } else if (command === 'setup' || command === 'full') {
+      await setup(project, command, args);
     } else if (operations.includes(command)) {
       await update(project, command, args);
     } else if (command === 'skills') {

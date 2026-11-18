@@ -1,6 +1,6 @@
 import { checkQuickstartPrivacy, planQuickstart, printOnboardingHandoff, printQuickstart, quickstartDefaults } from './quickstart.ts';
-import type { Edit } from './quickstart.ts';
-import { engineeringModules, isRuleBlockEdit, planRuleActivation, rulePath, splitRuleBlock } from './rule-activation.ts';
+import type { Edit, PresetOptions } from './quickstart.ts';
+import { engineeringModules, isRuleBlockEdit, planRuleActivation, rulePath, splitRuleBlock, adapterPaths } from './rule-activation.ts';
 import { randomUUID } from 'node:crypto';
 import { closeSync, lstatSync, openSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -14,7 +14,7 @@ const backupDir = '.ai/update-backups';
 const backupIgnore = backupDir + '/.gitignore';
 const owner = 'ai-workflow-kit';
 
-type Transaction = { id: string; action: string; edits: Edit[] };
+type Transaction = { id: string; action: string; edits: Edit[]; inputs?: Record<string, string | null> };
 
 function json(value: unknown): string {
   return JSON.stringify(value, null, 2) + '\n';
@@ -126,11 +126,18 @@ function parseTransaction(source: string, root: string): Transaction {
   const raw = readObject(source);
   if (!raw || typeof raw.id !== 'string' || !/^[a-f\d-]{36}$/.test(raw.id) ||
       typeof raw.action !== 'string' || !['update', 'repair', 'pin', 'rollback', 'activate-rules', 'quickstart', 'rollback-quickstart'].includes(raw.action) ||
-      !Array.isArray(raw.edits) || raw.edits.length > 20 || !raw.edits.length) throw new Error('Invalid update journal.');
+      !Array.isArray(raw.edits) || raw.edits.length > (raw.action.includes('quickstart') ? 32 : 20) || !raw.edits.length) throw new Error('Invalid update journal.');
   if (raw.action === 'quickstart' || raw.action === 'rollback-quickstart') {
     const edits = raw.edits as Edit[];
     validateQuickstartEdits(root, edits, raw.action === 'rollback-quickstart');
-    return { id: raw.id, action: raw.action, edits };
+    const inputs = readObject(JSON.stringify(raw.inputs));
+    if (raw.inputs !== undefined) {
+      const allowedInputs = new Set([...adapterPaths, ...quickstartDefaults({ policy: 'mixed', agents: [], version }).map(item => item.path), manifestPath]);
+      if (raw.action !== 'quickstart' || !inputs || Object.entries(inputs).some(([path, hash]) =>
+        !allowedInputs.has(path) || edits.some(edit => edit.path === path) ||
+        hash !== null && (typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash)))) throw new Error('Invalid setup journal inputs.');
+    }
+    return { id: raw.id, action: raw.action, edits, inputs: inputs as Transaction['inputs'] };
   }
   const allowed = new Map<string, Set<string>>();
   const current = manifest(read(root, manifestPath));
@@ -175,7 +182,7 @@ function validateQuickstartEdits(root: string, edits: Edit[], reverse: boolean) 
   const state = manifest(manifestEdit ? manifestEdit.after : installed);
   const defaults = bundledVersions.flatMap(version => quickstartDefaults({ ...state.choices, version }));
   const attachesRecommended = (path: string, before: string, after: string) =>
-    isRuleBlockEdit(path, before, after) && splitRuleBlock(path, after).names.length === engineeringModules.length;
+    isRuleBlockEdit(path, before, after) && (splitRuleBlock(path, after).full || 'minimal' in splitRuleBlock(path, after) || splitRuleBlock(path, after).names.length === engineeringModules.length);
   const paths = new Set<string>();
   for (const { path, before, after } of forward) {
     if (paths.has(path) || before === after || typeof after !== 'string') throw new Error('Invalid quickstart journal edit.');
@@ -223,7 +230,7 @@ function checkBackupPrivacy(project: Project): void {
   }
 }
 
-export async function update(project: Project, action: string, args: string[]): Promise<void> {
+export async function update(project: Project, action: string, args: string[], preset?: PresetOptions, approval = approve): Promise<void> {
   const { root } = project;
   const dry = args.includes('--dry-run');
   const values = args.filter(arg => arg !== '--dry-run');
@@ -265,12 +272,12 @@ export async function update(project: Project, action: string, args: string[]): 
       if (setup?.managed.some(({ path }) => read(root, path) === null)) {
         throw new Error('A managed setup file is missing. Review ai-setup repair before running quickstart.');
       }
-      const proposal = planQuickstart(project, path => read(root, path), setup?.choices);
+      const proposal = planQuickstart(project, path => read(root, path), setup?.choices, preset);
       edits = proposal.edits;
       activationInputs = [{ path: manifestPath, content: installed },
         ...[...proposal.inputs].map(([path, content]) => ({ path, content }))];
-      printQuickstart(project, edits, proposal.preserved, proposal.policy, false);
-      if (!edits.length) printOnboardingHandoff();
+      printQuickstart(project, edits, proposal.preserved, proposal.policy, false, preset?.preset === 'full' ? 'Full Engineering' : preset?.preset === 'minimal' ? 'Minimal' : undefined);
+      if (!edits.length) printOnboardingHandoff(preset?.onboarding ?? true);
     } else if (action === 'activate-rules') {
       const names = values.length === 1 && values[0] === 'all' ? engineeringModules : values;
       edits = planRuleActivation(project, names, path => read(root, path));
@@ -285,6 +292,9 @@ export async function update(project: Project, action: string, args: string[]): 
     }
     if (!edits.length) return;
     transaction = { id: randomUUID(), action, edits };
+    if (action === 'quickstart') transaction.inputs = Object.fromEntries(activationInputs
+      .filter(input => !edits.some(edit => edit.path === input.path))
+      .map(({ path, content }) => [path, content === null ? null : sha(content)]));
   }
 
   parseTransaction(json(transaction), root);
@@ -301,14 +311,22 @@ export async function update(project: Project, action: string, args: string[]): 
       throw new Error('Local-only activation requires ignored, untracked instruction entry points.');
     }
   }
+  function verifySetupInputs() {
+    for (const [path, hash] of Object.entries(transaction.inputs ?? {})) {
+      const current = read(root, path);
+      if ((current === null ? null : sha(current)) !== hash) throw new Error(`Setup input changed: ${path}. Review before resuming.`);
+    }
+  }
   checkRulePrivacy();
+  verifySetupInputs();
   verifyEdits(root, transaction.edits, saved !== null);
   checkBackupPrivacy(project);
-  if (dry || !await approve()) return;
+  if (dry || !await approval()) return;
   if (activationInputs.some(({ path, content }) => read(root, path) !== content)) {
     throw new Error('A setup input changed after preview. Review a fresh plan.');
   }
   checkRulePrivacy();
+  verifySetupInputs();
   verifyEdits(root, transaction.edits, saved !== null);
   checkBackupPrivacy(project);
   const journal = json(transaction);
@@ -324,5 +342,7 @@ export async function update(project: Project, action: string, args: string[]): 
   install(root, { path: backupDir + '/' + transaction.id + '.json', content: journal });
   if (read(root, pending) === journal) unlinkSync(safePath(root, pending));
   console.log(`Verified. Backup ID: ${transaction.id}`);
-  if (transaction.action === 'quickstart') printOnboardingHandoff();
+  if (transaction.action === 'quickstart') printOnboardingHandoff(
+    read(root, '.agents/skills/guided-project-onboarding/SKILL.md') !== null &&
+    read(root, '.claude/skills/guided-project-onboarding/SKILL.md') !== null);
 }

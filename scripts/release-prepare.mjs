@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import semver from 'semver';
 import { packageRoot, version } from '../packages/cli/src/metadata.ts';
@@ -32,12 +32,12 @@ try {
   const requested = semver.valid(target) ?? semver.inc(version, target);
   if (!requested || !semver.gt(requested, version))
     throw new Error('Choose a version newer than the current package version.');
-  const repositoryRoot = realpathSync(command('git', ['rev-parse', '--show-toplevel']));
-  const kitRoot = realpathSync(packageRoot);
-  if (relative(repositoryRoot, kitRoot) !== '')
-    throw new Error(
-      `Release preparation requires this package repository. Git root: ${repositoryRoot}; package root: ${kitRoot}.`,
-    );
+  // Git identifies its root without comparing Windows short and long path aliases.
+  if (
+    command('git', ['rev-parse', '--is-inside-work-tree']) !== 'true' ||
+    command('git', ['rev-parse', '--show-prefix']) !== ''
+  )
+    throw new Error('Release preparation requires this package repository.');
   if (command('git', ['status', '--porcelain', '--untracked-files=normal']))
     throw new Error(
       'Review and commit current work before release preparation. No files were changed.',

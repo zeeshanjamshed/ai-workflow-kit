@@ -147,6 +147,19 @@ test('release preparation versions metadata and notes without creating commits o
     ]);
     const head = git(['rev-parse', 'HEAD']);
     const before = readFileSync(join(root, 'assets/releases', version + '.json'), 'utf8');
+    const nested = join(root, 'nested');
+    mkdirSync(nested);
+    for (const item of ['package.json', 'scripts', 'packages/cli/src'])
+      cpSync(join(root, item), join(nested, item), { recursive: true });
+    const nestedRelease = invoke('../nested/scripts/release-prepare.mjs', [
+      'patch',
+      '--notes',
+      'Must refuse a package nested inside another repository.',
+    ]);
+    assert.equal(nestedRelease.status, 1);
+    assert.match(String(nestedRelease.stderr), /requires this package repository/);
+    assert.equal(JSON.parse(readFileSync(join(nested, 'package.json'), 'utf8')).version, version);
+    rmSync(nested, { recursive: true, force: true });
     const collision = invoke('release-prepare.mjs', ['0.4.4', '--notes', 'Fixture release']);
     assert.equal(collision.status, 1);
     assert.equal(JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version, version);

@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { checkArtifact } from './artifact.mjs';
+import { waitForIntegrity } from './registry.mjs';
 
 function npm(args) {
   if (!process.env.npm_execpath) throw new Error('Run publishing through npm run release:publish.');
@@ -37,41 +38,34 @@ try {
   });
   // Publishing the already-tested tarball prevents lifecycle hooks from rebuilding it.
   const tag = artifact.version.includes('-') ? 'next' : 'latest';
-  npm([
-    'publish',
-    artifact.path,
-    '--ignore-scripts',
-    '--access',
-    'public',
-    '--tag',
-    tag,
-    '--registry',
-    'https://registry.npmjs.org/',
-  ]);
-  let verified = false;
-  for (let attempt = 0; attempt < 6; attempt++) {
-    try {
-      const result = JSON.parse(
-        npm([
-          'view',
-          `${artifact.package}@${artifact.version}`,
-          'dist.integrity',
-          '--json',
-          '--registry',
-          'https://registry.npmjs.org/',
-        ]),
-      );
-      if (result !== artifact.integrity)
-        throw new Error('Published integrity differs from the approved tarball.');
-      verified = true;
-      break;
-    } catch (error) {
-      if (attempt === 5) throw error;
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-  }
-  if (!verified)
-    throw new Error('Publication could not be verified. Do not republish; inspect npm state.');
+  console.log(
+    npm([
+      'publish',
+      artifact.path,
+      '--ignore-scripts',
+      '--access',
+      'public',
+      '--tag',
+      tag,
+      '--registry',
+      'https://registry.npmjs.org/',
+    ]),
+  );
+  await waitForIntegrity(artifact.integrity, () =>
+    JSON.parse(
+      npm([
+        'view',
+        `${artifact.package}@${artifact.version}`,
+        'dist.integrity',
+        '--json',
+        '--prefer-online',
+        '--fetch-retries=0',
+        '--fetch-timeout=10000',
+        '--registry',
+        'https://registry.npmjs.org/',
+      ]),
+    ),
+  );
   console.log(`Published and verified ${artifact.package}@${artifact.version} (${tag}).`);
 } catch (error) {
   console.error(error.message);

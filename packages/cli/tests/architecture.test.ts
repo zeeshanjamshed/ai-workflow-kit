@@ -12,11 +12,62 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { pathToFileURL } from 'node:url';
 import { test } from 'node:test';
 import { bundledVersions, frozenTemplates, snapshot, assetGroups } from '../src/bundles.ts';
 import { packageRoot, version } from '../src/metadata.ts';
 import { templates, validateChoices } from '../src/initialize.ts';
 import { parseOptions } from '../src/arguments.ts';
+
+test('registry confirmation retries delayed visibility and stops on a mismatched archive', async () => {
+  const { waitForIntegrity } = await import(
+    pathToFileURL(join(packageRoot, 'scripts/registry.mjs')).href
+  );
+  let reads = 0;
+  let pauses = 0;
+  const sleep = async () => {
+    pauses++;
+  };
+  await waitForIntegrity(
+    'approved',
+    async () => {
+      if (++reads < 3) throw new Error('Version not visible yet');
+      return 'approved';
+    },
+    { sleep },
+  );
+  assert.equal(reads, 3);
+  assert.equal(pauses, 2);
+  reads = 0;
+  pauses = 0;
+  await assert.rejects(
+    waitForIntegrity(
+      'approved',
+      async () => {
+        reads++;
+        return 'different';
+      },
+      { sleep },
+    ),
+    /differs from the approved tarball/,
+  );
+  assert.equal(reads, 1);
+  assert.equal(pauses, 0);
+  reads = 0;
+  await assert.rejects(
+    waitForIntegrity(
+      'approved',
+      async () => {
+        reads++;
+        throw new Error('Still unavailable');
+      },
+      { sleep },
+    ),
+    /Do not republish/,
+  );
+  assert.equal(reads, 24);
+  assert.equal(pauses, 23);
+});
 
 test('all frozen template variants and assets retain their exact historical contents', () => {
   for (const release of bundledVersions) {

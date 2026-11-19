@@ -2,6 +2,14 @@
 
 Historical release evidence and local candidate checkpoints captured on November 19. Current gates are in [release readiness](RELEASE_READINESS.md). Old pending statements below are historical.
 
+## v0.4.6 publication on November 19
+
+The owner approved npm publication and the protected GitHub environment. Source commit `57a947496fdaaba31f48daf1d31775e2e5ccd3a5` passed all six platform checks and archive tests on Linux, macOS, and Windows with Node.js 22 and 24. The release contains 65 allowlisted files and no runtime dependencies. npm confirms v0.4.6 as `latest` and exposes provenance.
+
+The downloaded published tarball matches SHA-256 `4f4df3010f05abcca5f47bf257772df1a24a582540327dce7a54286b8c42cb7c`. Offline installation and CLI smoke checks passed against that registry download. [npm version](https://www.npmjs.com/package/@zeeshanjamshed/ai-workflow-kit/v/0.4.6).
+
+[The publication workflow](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/44523486284) reports failure because registry confirmation returned 404 after a successful publish command. Later independent registry checks confirmed the version, `latest` tag, and matching integrity. The package was not republished. Maintainer verification now refreshes npm metadata, waits longer for visibility, and stops immediately on a mismatched archive. Authenticated agent trials remain deferred at the owner's request. No Git tag or GitHub release was created.
+
 # Release readiness
 
 **Decision: hold v1.0.0.** v0.4.2 is publicly available on npm under the MIT License with copyright © 2026 Zeeshan Jamshed. The stable release and its tag remain gated.

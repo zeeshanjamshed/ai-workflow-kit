@@ -47,7 +47,7 @@ Review the source commit, release notes, results, artifact inventory, and SHA-25
 
 npm trusted publishing supplies short-lived credentials and, for this public repository/package, automatic provenance. Stable versions use the `latest` npm tag. Versions containing a prerelease suffix use `next`.
 
-The workflow verifies the registry's integrity value after publishing. If publication succeeded but registry verification failed, inspect npm state before doing anything else. Never assume that rerunning a failed workflow means the version was not published. npm versions cannot be overwritten.
+The workflow verifies the registry's integrity value after publishing, refreshing npm metadata and retrying bounded read failures while the version becomes visible. An integrity mismatch stops verification immediately. If publication succeeded but registry verification failed, inspect npm state before doing anything else. Never assume that rerunning a failed workflow means the version was not published. npm versions cannot be overwritten.
 
 GitHub release notes and Git tags remain separate explicit Git actions. Use the verified source commit if the owner approves creating them.
 

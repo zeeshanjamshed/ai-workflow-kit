@@ -1,6 +1,6 @@
 # Project plan
 
-Current work follows the [agreed simplification](SIMPLIFICATION.md). **v0.4.6 is published on npm.** The owner approved work on `main`, release preparation, commits, pushes, and publication. Git tags and GitHub release creation remain separate actions.
+Current work follows the [agreed simplification](SIMPLIFICATION.md). **v0.4.7 is published on npm.** The owner approved work on `main`, release preparation, commits, pushes, and publication. Git tags and GitHub release creation remain separate actions.
 
 | Phase | Outcome                                                                 | Status   |
 | ----- | ----------------------------------------------------------------------- | -------- |
@@ -12,7 +12,7 @@ Current work follows the [agreed simplification](SIMPLIFICATION.md). **v0.4.6 is
 
 Phase 4 is approved on November 19. It also isolates fixture commits from personal Git signing settings and closes a local-only tracking gap for existing skills. Initialization refuses agent-selection changes that would leave its recorded provenance inconsistent.
 
-## Final local verification
+## Earlier v0.4.6 verification
 
 Completed November 19 on macOS with Node.js 24.14.1.
 
@@ -71,3 +71,11 @@ Real macOS terminal checks covered arrow-key and Space selection, default-No set
 The owner approved committing, pushing, and publishing the terminal UI changes on November 19. The UI implementation is committed as `4c7d198`. Release preparation generated v0.4.7 and its immutable snapshot. The owner plans the first live trial in a project with no existing AI rules or setup. Previous v0.4.6 contents remain frozen. Local checks and hosted release verification are required before publishing through the protected npm environment.
 
 Local v0.4.7 verification passed all 81 tests, format/lint/types/assets, build, inventory of 100 files, and offline installation using an empty npm cache. Candidate SHA-256: `737d16ecef4625a533ff897cdeec4ea4ad19d3b4f64efec039aaddd920028116`. Workflow syntax passed actionlint. Hosted verification and protected-environment approval remain before publication.
+
+## Published v0.4.7
+
+The owner approved publication and the protected npm environment. Release source: `815908b6980688b7790a5a42429cc80996e1c1ec`. All six [CI jobs](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/44552093671) and all six archive tests passed. One macOS archive job remained queued for ten minutes; a targeted retry preserved the original archive and completed outputs, then passed. [The publication workflow](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/44552339261) completed successfully.
+
+npm confirms v0.4.7 as `latest` with provenance. The downloaded archive matches SHA-256 `737d16ecef4625a533ff897cdeec4ea4ad19d3b4f64efec039aaddd920028116` and its approved SHA-512 integrity. Installation and CLI smoke checks passed against that registry download using an empty npm cache. The archive contains 100 allowlisted files, including the bundled prompt dependencies and eleven immutable baselines.
+
+The first archive download returned 404 after metadata appeared. A subsequent standard npm download succeeded and was verified; no duplicate publication was attempted. No Git tag or GitHub release was created. The owner's live trial in a project without AI setup remains next.

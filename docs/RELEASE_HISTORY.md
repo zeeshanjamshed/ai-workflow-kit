@@ -2,6 +2,14 @@
 
 Historical release evidence and local candidate checkpoints captured on November 19. Current gates are in [release readiness](RELEASE_READINESS.md). Old pending statements below are historical.
 
+## v0.4.7 publication on November 19
+
+The terminal UI release is published as npm latest, with provenance. Source commit `815908b6980688b7790a5a42429cc80996e1c1ec` passed all six CI jobs and all six exact-archive tests on Linux, macOS, and Windows with Node.js 22 and 24. A targeted retry recovered one queued macOS job without rebuilding the archive or discarding completed outputs. The owner approved the protected npm environment, and [publication completed successfully](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/44552339261).
+
+The release includes menus, checkboxes, default-No confirmations, cancellation, clear baseline notices, and bundled prompt dependencies for offline use. Local verification passed all 81 tests, static checks, build, inventory of 100 files, and installation with an empty npm cache.
+
+The downloaded public archive matches SHA-256 `737d16ecef4625a533ff897cdeec4ea4ad19d3b4f64efec039aaddd920028116` and passed offline installation and CLI smoke checks. The first download returned 404 after metadata appeared; subsequent standard download and verification succeeded. No duplicate publication, Git tag, or GitHub release was created. The owner plans a live trial in a project without existing AI setup. [npm version](https://www.npmjs.com/package/@zeeshanjamshed/ai-workflow-kit/v/0.4.7).
+
 ## v0.4.6 publication on November 19
 
 The owner approved npm publication and the protected GitHub environment. Source commit `57a947496fdaaba31f48daf1d31775e2e5ccd3a5` passed all six platform checks and archive tests on Linux, macOS, and Windows with Node.js 22 and 24. The release contains 65 allowlisted files and no runtime dependencies. npm confirms v0.4.6 as `latest` and exposes provenance.

@@ -2,13 +2,12 @@
 
 Your reusable AI engineering rules, project knowledge, and onboarding setup for Claude Code, Codex, and Cursor.
 
-**Current checkout is an unpublished v0.4.6 candidate.** The registry currently serves v0.4.3. npm will not provide this new flow until it is released.
-
 ## Set up a project
 
-With the candidate CLI installed, run this inside a new or existing project.
+Use Node.js 22.18 or newer. Run these commands inside a new or existing project.
 
 ```sh
+npm install --global @zeeshanjamshed/ai-workflow-kit
 ai-setup init
 ```
 
@@ -32,9 +31,10 @@ The CLI never commits or silently untracks files. Already tracked private files 
 
 ## Bring in new kit rules
 
-Install the chosen newer CLI release, then run this in each initialized project.
+Install the newer CLI release, then review its changes in each initialized project.
 
 ```sh
+npm install --global @zeeshanjamshed/ai-workflow-kit
 ai-setup update
 ```
 
@@ -52,7 +52,7 @@ The update uses the installed CLI's bundle and works offline. It does not fetch 
 
 Keep the backup ID printed after a successful operation. Backups stay in the ignored `.ai/update-backups/` directory. Existing initialized projects keep their baseline until you approve `update`; tracking and agent-selection changes need separate review.
 
-## Try this candidate
+## Try in an isolated project
 
 Use Node.js 22.18 or newer. From this kit checkout, build the package.
 
@@ -61,7 +61,7 @@ npm ci --ignore-scripts
 npm pack
 ```
 
-Follow the [short trial guide](docs/TRIALS.md) to install it in an isolated location and try new and existing projects. The candidate has no runtime dependencies. Coding-agent sessions use their own accounts and services.
+Follow the [short trial guide](docs/TRIALS.md) to install it in an isolated location and try new and existing projects. The package has no runtime dependencies. Coding-agent sessions use their own accounts and services.
 
 The main setup lives in each project's `.ai/` directory. Small native instruction files point agents to shared rules and context. Each project keeps its own rules, exceptions, knowledge, decisions, and handoffs. Kit updates never authorize project work.
 
@@ -69,4 +69,4 @@ Agent instructions guide behavior. Native agent permissions and sandboxes provid
 
 See the [CLI reference](docs/CLI_REFERENCE.md), [current project plan](https://github.com/zeeshanjamshed/ai-workflow-kit/blob/main/docs/PROJECT_PLAN.md), and [release readiness](https://github.com/zeeshanjamshed/ai-workflow-kit/blob/main/docs/RELEASE_READINESS.md) for details.
 
-MIT licensed. Publishing, commits, and release tags require separate owner approval.
+MIT licensed.

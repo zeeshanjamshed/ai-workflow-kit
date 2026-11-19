@@ -8,12 +8,12 @@ From the kit checkout, with Node.js 22.18 or newer:
 
 ```sh
 npm pack
-npm install --global --prefix /tmp/ai-workflow-kit-trial --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.6.tgz
+npm install --global --prefix /tmp/ai-workflow-kit-trial --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.7.tgz
 export PATH="/tmp/ai-workflow-kit-trial/bin:$PATH"
 ai-setup --version
 ```
 
-Expect `0.4.6`. This leaves your regular global installation alone. Use that terminal for the project and agent session. On Windows, choose a temporary install prefix and add the prefix itself to the session PATH; the launcher is `ai-setup.cmd`. Automatic agent launch uses a manual handoff there.
+Expect `0.4.7`. This leaves your regular global installation alone. Use that terminal for the project and agent session. On Windows, choose a temporary install prefix and add the prefix itself to the session PATH; the launcher is `ai-setup.cmd`. Automatic agent launch uses a manual handoff there.
 
 ## 1. New project
 
@@ -23,7 +23,7 @@ Create an empty temporary Git project and run:
 ai-setup init
 ```
 
-Choose your agents and mixed tracking. Check the proposed paths and type `apply`. Save the backup ID. Choose your usual agent or enter a custom alias such as `claude-orca`, then type `start`.
+Choose your agents and mixed tracking. Check the proposed paths and confirm the setup. Save the backup ID. Choose your usual agent or enter a custom alias such as `claude-orca`, then confirm launch.
 
 Ask the agent to explain the loaded rules and propose one harmless change without making it. Check that it gives a short plan and waits. Approve the small task once and check that it finishes within that approval, reviews its work, and reports actual checks.
 
@@ -53,7 +53,7 @@ To test rollback, use a setup or update backup **before editing its affected fil
 ai-setup rollback <backup-id>
 ```
 
-Review the reversal and type `apply`. Existing content should return. A later edit to an affected file must cause rollback to refuse. Rerunning `init` after a completed setup must not duplicate files.
+Review and approve the reversal. Existing content should return. A later edit to an affected file must cause rollback to refuse. Rerunning `init` after a completed setup must not duplicate files.
 
 For local-only tracking, use a disposable project with untracked AI files. Check the previewed `.gitignore` addition. Already tracked private files should block setup, with no silent untracking.
 

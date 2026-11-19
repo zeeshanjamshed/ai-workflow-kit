@@ -26,3 +26,7 @@ Run the [owner trials](TRIALS.md), including fresh-session instruction loading, 
 [The publication run](https://github.com/zeeshanjamshed/ai-workflow-kit/actions/runs/44523486284) reports failure because its final registry check timed out after the publish command succeeded. Subsequent independent checks confirmed v0.4.6, the `latest` tag, matching archive contents, and provenance. No duplicate publication was attempted. Future verification uses fresh registry reads and a longer bounded wait. See the [project plan](PROJECT_PLAN.md) for exact evidence and checksums.
 
 Follow [the maintainer release guide](RELEASING.md) for future releases. Instruction text does not enforce native permissions.
+
+## v0.4.7 preparation
+
+The owner approved the terminal UI release. Local verification passed all 81 tests, static checks, immutable assets, build, inventory of 100 files, and offline installation with an empty npm cache. The release includes arrow-key menus, agent checkboxes, default-No confirmations, safe cancellation, compact previews, custom alias input, and clearer old-baseline notices. Hosted release checks and the npm environment approval must pass before publication. The owner plans the first live trial in a project without existing AI setup.

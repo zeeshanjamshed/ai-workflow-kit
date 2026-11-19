@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.4.7 - 2026-11-19
+
+Add interactive terminal menus, agent checkboxes, clear setup summaries, safe cancellation, and bundled offline prompt support.
 
 - Interactive menus, agent checkboxes, colour-aware summaries, and safe cancellation.
 - Clearer installed-baseline notices and manual onboarding handoff.

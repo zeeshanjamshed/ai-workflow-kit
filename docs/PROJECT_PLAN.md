@@ -65,3 +65,9 @@ Clack 1.9.0 is MIT licensed and supports the kit's Node.js range. npm bundles it
 Verification passed `npm run verify`, including all 81 tests, formatting, lint, types, immutable assets, build, inventory of 99 package files, and offline installation with an empty npm cache. Local candidate SHA-256: `3025028d8a462c05171e9095331f88d32153f5953531956f51f52af20c2f93f2`. Dependency installation reported zero audit vulnerabilities.
 
 Real macOS terminal checks covered arrow-key and Space selection, default-No setup approval with no file writes, Ctrl+C cancellation with exit 130, colour and NO_COLOR, approved setup, custom alias input with launch declined, and a compiled package installed offline from its archive. A disposable v0.4.2 project retained its baseline and displayed the explicit upgrade notice. Windows and Linux interactive terminals and hosted CI for these local changes remain unverified. No authenticated agent was launched.
+
+## Approved v0.4.7 release
+
+The owner approved committing, pushing, and publishing the terminal UI changes on November 19. The UI implementation is committed as `4c7d198`. Release preparation generated v0.4.7 and its immutable snapshot. The owner plans the first live trial in a project with no existing AI rules or setup. Previous v0.4.6 contents remain frozen. Local checks and hosted release verification are required before publishing through the protected npm environment.
+
+Local v0.4.7 verification passed all 81 tests, format/lint/types/assets, build, inventory of 100 files, and offline installation using an empty npm cache. Candidate SHA-256: `737d16ecef4625a533ff897cdeec4ea4ad19d3b4f64efec039aaddd920028116`. Workflow syntax passed actionlint. Hosted verification and protected-environment approval remain before publication.

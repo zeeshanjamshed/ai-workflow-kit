@@ -8,12 +8,12 @@ From the kit checkout, with Node.js 22.18 or newer:
 
 ```sh
 npm pack
-npm install --global --prefix /tmp/ai-workflow-kit-trial --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.5.tgz
+npm install --global --prefix /tmp/ai-workflow-kit-trial --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.6.tgz
 export PATH="/tmp/ai-workflow-kit-trial/bin:$PATH"
 ai-setup --version
 ```
 
-Expect `0.4.5`. This leaves your regular global installation alone. Use that terminal for the project and agent session. On Windows, choose a temporary install prefix and add the prefix itself to the session PATH; the launcher is `ai-setup.cmd`. Automatic agent launch uses a manual handoff there.
+Expect `0.4.6`. This leaves your regular global installation alone. Use that terminal for the project and agent session. On Windows, choose a temporary install prefix and add the prefix itself to the session PATH; the launcher is `ai-setup.cmd`. Automatic agent launch uses a manual handoff there.
 
 ## 1. New project
 

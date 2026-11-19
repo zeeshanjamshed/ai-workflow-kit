@@ -2,7 +2,7 @@
 
 Your reusable AI engineering rules, project knowledge, and onboarding setup for Claude Code, Codex, and Cursor.
 
-**Current checkout is an unpublished v0.4.5 candidate.** The repository's last recorded public release is v0.4.2. npm will not provide this new flow until it is released.
+**Current checkout is an unpublished v0.4.6 candidate.** The registry currently serves v0.4.3. npm will not provide this new flow until it is released.
 
 ## Set up a project
 

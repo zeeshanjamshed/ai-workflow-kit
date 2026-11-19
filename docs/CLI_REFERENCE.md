@@ -33,7 +33,7 @@ Start a fresh Claude Code or Codex session in the project and run the **guided-p
 
 ## Setup presets in the local candidate
 
-These preset commands remain available for compatibility in the local v0.4.5 candidate. Normal setup uses `init` and requires no preset selection.
+These preset commands remain available for compatibility in the local v0.4.6 candidate. Normal setup uses `init` and requires no preset selection.
 
 ```sh
 ai-setup setup
@@ -80,7 +80,7 @@ From an initialized project, use `ai-setup update --dry-run` to compare the inst
 - `ai-setup repair` can restore missing managed files from the installed baseline after approval. It preserves existing files.
 - `ai-setup rollback <backup-id>` previews the inverse operation and requires approval. It refuses to overwrite subsequent edits. If interrupted, rerun `ai-setup update` to review and resume the pending operation.
 
-Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.4.1, 0.4.2, 0.4.3, 0.4.4, and 0.4.5. It upgrades to its own version and leaves version downgrades to rollback.
+Backups and the recovery journal stay in the ignored `.ai/update-backups/` directory. They contain the before and after contents of files in the operation. Keep secrets out of setup files. Close other editors and avoid concurrent setup operations while applying changes. The current bundle recognizes setup versions 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.4.1, 0.4.2, 0.4.3, 0.4.4, 0.4.5, and 0.4.6. It upgrades to its own version and leaves version downgrades to rollback.
 
 ### Optional global installation
 
@@ -93,7 +93,7 @@ Use Node.js 22.18 or newer. In a checkout of the reviewed kit commit, build the 
 ```sh
 npm ci --ignore-scripts
 npm pack
-npm install --global --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.5.tgz
+npm install --global --offline --ignore-scripts ./zeeshanjamshed-ai-workflow-kit-0.4.6.tgz
 ai-setup --version
 ```
 

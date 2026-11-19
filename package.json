@@ -68,5 +68,11 @@
     "docs/TRIALS.md",
     "assets",
     "CHANGELOG.md"
+  ],
+  "dependencies": {
+    "@clack/prompts": "1.9.0"
+  },
+  "bundleDependencies": [
+    "@clack/prompts"
   ]
 }

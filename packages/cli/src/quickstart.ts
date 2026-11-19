@@ -1,4 +1,5 @@
 import { fullStandards } from './full-standards.ts';
+import { interactiveTerminal, note } from './terminal.ts';
 import { diagnose } from './reports.ts';
 import { inspectGitPath } from './discovery.ts';
 import type { Project } from './discovery.ts';
@@ -265,6 +266,39 @@ export function printQuickstart(
   resumed: boolean,
   label = 'Quickstart',
 ) {
+  const privacy = edits.find((edit) => edit.path === '.gitignore');
+  if (interactiveTerminal) {
+    const { findings } = diagnose(project);
+    note(
+      [
+        project.root,
+        `Git tracking ${policy === 'tracked' ? 'shared' : policy}`,
+        ...(project.workspaceMarkers.length || project.packageWorkspaces
+          ? ['Workspace detected. Setup applies to the repository root.']
+          : []),
+        ...(resumed ? ['Resume the previously saved plan.'] : []),
+        ...edits.map(
+          ({ path, before, after }) =>
+            `${after === null ? 'Remove' : before === null ? 'Add' : 'Update'} ${path}`,
+        ),
+        ...(preserved.length
+          ? [`Keep ${preserved.length} existing files, including custom rules and skills.`]
+          : []),
+        ...(edits.length
+          ? ['Applying saves a local recovery backup.']
+          : ['Setup is already complete.']),
+        ...findings.map((finding) => `Check ${finding}`),
+        ...(privacy
+          ? [
+              'Git ignore additions',
+              privacy.after?.slice((privacy.before ?? '').length).trim() ?? '',
+            ]
+          : []),
+      ].join('\n'),
+      label === 'Initialize' ? 'Setup preview' : label,
+    );
+    return;
+  }
   console.log(`${label}: ${project.root} (${project.classification}, ${policy} tracking)`);
   if (project.workspaceMarkers.length || project.packageWorkspaces)
     console.log('  Workspace detected. Setup is scoped to the repository root.');
@@ -276,7 +310,6 @@ export function printQuickstart(
     console.log(
       `  ${before === null ? 'Add' : path === '.gitignore' ? 'Update ignore rules in' : 'Link rules in'} ${path}`,
     );
-  const privacy = edits.find((edit) => edit.path === '.gitignore');
   if (privacy)
     console.log(
       `  Ignore these setup paths in Git\n${privacy.after?.slice((privacy.before ?? '').length).trim()}`,

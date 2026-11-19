@@ -32,6 +32,8 @@ try {
       '--global',
       '--prefix',
       install,
+      '--cache',
+      join(root, 'empty-npm-cache'),
       '--offline',
       '--ignore-scripts',
       '--no-audit',

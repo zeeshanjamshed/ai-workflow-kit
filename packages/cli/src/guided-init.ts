@@ -1,4 +1,4 @@
-import { openDialog } from './terminal.ts';
+import { openDialog, interactiveTerminal, intro, outro, note, message } from './terminal.ts';
 import { parseOptions, stringOption } from './arguments.ts';
 import { stdin, stdout } from 'node:process';
 import { realpathSync } from 'node:fs';
@@ -103,17 +103,44 @@ export async function guidedInit(project: Project, args: string[]) {
     const context = resumeContext(project);
     const records = context.knowledge.length + context.decisions.length + context.tasks.length;
     if (!dry) {
-      console.log(`Project ${project.root}`);
-      if (found.length || records || skills.length)
-        console.log(
-          `Existing AI setup found. ${skills.length} project skills in this scope and ${records} saved records. Existing files stay in place.\n${found.map((path) => `  ${path}`).join('\n')}`,
+      intro(`AI Workflow Kit ${version}`);
+      if (interactiveTerminal) {
+        note(
+          [
+            project.root,
+            found.length || records || skills.length
+              ? `Existing setup found. ${skills.length} project skills and ${records} saved records.`
+              : 'No standard AI setup found.',
+            ...new Set(found),
+            'Existing files stay in place.',
+          ].join('\n'),
+          'Project',
         );
-      else console.log('No standard AI setup found. Existing project files will be preserved.');
+      } else {
+        console.log(`Project ${project.root}`);
+        if (found.length || records || skills.length)
+          console.log(
+            `Existing AI setup found. ${skills.length} project skills in this scope and ${records} saved records. Existing files stay in place.\n${found.map((path) => `  ${path}`).join('\n')}`,
+          );
+        else console.log('No standard AI setup found. Existing project files will be preserved.');
+      }
     }
     let agentNames = agentsFlag ?? choices?.agents.join(',');
     if (!agentNames)
       agentNames =
-        dry || pending !== null ? 'all' : await ask('Which agents? claude,codex,cursor [all]');
+        dry || pending !== null
+          ? 'all'
+          : (
+              await dialog.multiselect(
+                'Which agents do you use?',
+                ['claude', 'codex', 'cursor'].map((value) => ({
+                  value,
+                  label: { claude: 'Claude Code', codex: 'Codex', cursor: 'Cursor' }[value]!,
+                })),
+                ['claude', 'codex', 'cursor'],
+                'Which agents? claude,codex,cursor [all]',
+              )
+            ).join(',');
     const enabled = agentNames
       .split(',')
       .map((name) => name.trim())
@@ -126,7 +153,18 @@ export async function guidedInit(project: Project, args: string[]) {
       policyName =
         dry || pending !== null
           ? 'mixed'
-          : await ask(
+          : await dialog.select(
+              'How should Git track this setup?',
+              [
+                {
+                  value: 'mixed',
+                  label: 'Mixed',
+                  hint: 'Recommended. Share rules, keep knowledge local',
+                },
+                { value: 'shared', label: 'Shared', hint: 'Share rules and project knowledge' },
+                { value: 'local-only', label: 'Local only', hint: 'Ignore all kit files' },
+              ],
+              'mixed',
               'Git tracking? shared, mixed, local-only [mixed]\nShared includes rules and knowledge. Mixed keeps knowledge, decisions, and handoffs local. Local-only ignores all kit files.',
             );
     const policy = tracking(policyName || 'mixed');
@@ -172,29 +210,54 @@ export async function guidedInit(project: Project, args: string[]) {
             await ask('Any other AI rule or knowledge paths? Comma-separated, or Enter to skip.'),
           );
     const prompt = onboardingPrompt(extra);
-    const completed = await update(
-      project,
-      'quickstart',
-      dry ? ['--dry-run'] : [],
-      options,
-      async () =>
-        (await ask('Type apply to install this setup and save its recovery backup.')) === 'apply',
+    const completed = await update(project, 'quickstart', dry ? ['--dry-run'] : [], options, () =>
+      dialog.approve(
+        'Apply this setup and save its recovery backup?',
+        'apply',
+        'Type apply to install this setup and save its recovery backup.',
+      ),
     );
-    if (!completed || dry) return;
-    if (project.version && project.version !== version)
-      console.log(
-        `Installed baseline ${project.version} is preserved. Run update to review the latest bundled changes.`,
+    if (!completed || dry) {
+      if (!completed) outro('Setup not applied.');
+      return;
+    }
+    if (project.version && project.version !== version) {
+      if (interactiveTerminal)
+        message(
+          `This project still uses baseline ${project.version}. This CLI is ${version}.\nRun npx @zeeshanjamshed/ai-workflow-kit@latest update to review the upgrade.`,
+          'warn',
+        );
+      else
+        console.log(
+          `Installed baseline ${project.version} is preserved. Run update to review the latest bundled changes.`,
+        );
+    }
+    if (interactiveTerminal)
+      message(
+        'Onboarding reviews your code and existing AI setup. Saving or consolidating anything needs your approval.',
       );
-    console.log(
-      `Onboarding can inspect your project and propose consolidation. Saving knowledge needs your approval.\nIn your agent, send\n${prompt}`,
-    );
+    else
+      console.log(
+        `Onboarding can inspect your project and propose consolidation. Saving knowledge needs your approval.\nIn your agent, send\n${prompt}`,
+      );
     if (parsed.values['no-launch'] || !stdin.isTTY || !stdout.isTTY) {
+      if (interactiveTerminal) note(prompt, 'Manual onboarding prompt');
       console.log(
         'Open your agent in this project to onboard, or rerun init in a terminal to start it here.',
       );
+      outro('Setup ready.');
       return;
     }
-    launch = await chooseAgentLaunch(project.root, prompt, (question) => ask(question, false));
+    launch = await chooseAgentLaunch(
+      project.root,
+      prompt,
+      (question) => ask(question, false),
+      undefined,
+      undefined,
+      dialog,
+    );
+    if (interactiveTerminal && !launch) note(prompt, 'Manual onboarding prompt');
+    outro(launch ? 'Starting onboarding.' : 'Setup ready.');
   } finally {
     dialog.close();
   }

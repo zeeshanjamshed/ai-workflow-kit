@@ -58,7 +58,7 @@ GitHub release notes and Git tags remain separate explicit Git actions. Use the 
 - Prepare a new version before final verification. Existing projects can then review the new baseline through `update`.
 - Never edit `assets/releases/*.json`. These preserve exact historical contents and every supported tracking/agent variant.
 
-`assets:freeze` refuses to replace a different snapshot. Release preparation creates a snapshot for the new version automatically. Runtime dependencies remain empty; asset loading uses Node.js built-ins.
+`assets:freeze` refuses to replace a different snapshot. Release preparation creates a snapshot for the new version automatically. Asset loading uses Node.js built-ins. The Clack prompt library and its locked runtime dependencies are bundled in the tarball. Package inventory checks verify the bundled package set, and smoke installation uses an empty npm cache with offline mode enabled.
 
 ## Official guidance
 

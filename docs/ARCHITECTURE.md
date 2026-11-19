@@ -22,6 +22,8 @@ Update planning accepts a read callback and does not write. File application is 
 
 Current Markdown assets have a catalog mapping sources to installed destinations. Release snapshots deduplicate content by SHA-256, retain every supported ordered adapter/tracking variant, and have no executable historical implementation. Snapshot generation and regression tests protect exact historical bytes.
 
-Builds remove only generated dist output, check asset consistency, and compile TypeScript to JavaScript. The npm package ships compiled runtime modules, asset data, license, changelog, and three user guides. It has no runtime package dependencies. Development-only ESLint, TypeScript, and Prettier provide checks.
+Builds remove only generated dist output, check asset consistency, and compile TypeScript to JavaScript. The npm package ships compiled runtime modules, asset data, license, changelog, and three user guides. Clack provides the interactive terminal UI and is bundled with its runtime dependencies using npm bundleDependencies, so tarball installation also works offline with an empty npm cache. Non-interactive commands do not load the renderer. Development-only ESLint, TypeScript, and Prettier provide checks.
 
 The release workflow builds once, tests the same archive across the platform matrix, and requires an externally configured protected environment before publication. See [release setup](RELEASING.md). Native agent permissions remain the enforcement boundary for agent actions.
+
+Interactive prompts use arrow-key selections, agent checkboxes, text inputs, and confirmations that default to No. Ctrl+C ends the current operation without approving further changes. Dumb terminals and piped input retain the original plain input protocol. NO_COLOR suppresses colour without disabling menus. Setup and update plans, preservation, journals, and recovery remain in their existing layers.

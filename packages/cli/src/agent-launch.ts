@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process';
 import { basename, isAbsolute } from 'node:path';
+import type { Dialog } from './terminal.ts';
+import { message } from './terminal.ts';
 
 export function onboardingPrompt(paths: string[] = []) {
   return (
@@ -43,9 +45,22 @@ export async function chooseAgentLaunch(
   ask: (question: string) => Promise<string>,
   shell = process.env.SHELL,
   platform = process.platform,
+  dialog?: Dialog,
 ) {
   const agent = (
-    await ask('Start onboarding now? claude, codex, custom, later [later]')
+    dialog
+      ? await dialog.select(
+          'Start onboarding now?',
+          [
+            { value: 'claude', label: 'Claude Code' },
+            { value: 'codex', label: 'Codex' },
+            { value: 'custom', label: 'Custom command or alias' },
+            { value: 'later', label: 'Later' },
+          ],
+          'later',
+          'Start onboarding now? claude, codex, custom, later [later]',
+        )
+      : await ask('Start onboarding now? claude, codex, custom, later [later]')
   ).toLowerCase();
   if (!agent || agent === 'later') return;
   if (!['claude', 'codex', 'custom'].includes(agent))
@@ -60,18 +75,23 @@ export async function chooseAgentLaunch(
   const launch = agentLaunch(command, agent === 'custom', prompt, shell, platform, root);
   if (!launch) {
     console.log(
-      'Automatic launch is unavailable for this platform or shell. Use the onboarding prompt above in your agent.',
+      'Automatic launch is unavailable for this platform or shell. Use the manual onboarding prompt in your agent.',
     );
     return;
   }
-  console.log(`Run ${command} in ${root} with the onboarding prompt above.`);
+  message(`Run ${command} in ${root} for guided onboarding.`);
   if (launch.shellStartup)
     console.log(
       `This uses ${launch.executable} and loads its login and interactive startup files. Existing agent permissions remain in effect.`,
     );
-  return (await ask('Type start to launch, or Enter to do it later.')) === 'start'
-    ? launch
-    : undefined;
+  const approved = dialog
+    ? await dialog.approve(
+        `Start ${command} for onboarding?`,
+        'start',
+        'Type start to launch, or Enter to do it later.',
+      )
+    : (await ask('Type start to launch, or Enter to do it later.')) === 'start';
+  return approved ? launch : undefined;
 }
 
 export async function runAgent(root: string, plan: NonNullable<ReturnType<typeof agentLaunch>>) {

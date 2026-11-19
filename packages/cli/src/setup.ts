@@ -22,10 +22,13 @@ export async function setup(project: Project, command: string, args: string[]) {
     throw new Error('Choose one onboarding option and no positional arguments.');
   const pending = exists(safePath(project.root, '.ai/update-backups/.pending.json'));
   const dialog = openDialog();
-  const { ask } = dialog;
   try {
-    const approval = async () =>
-      (await ask('Type apply to approve this operation and its backup:', false)) === 'apply';
+    const approval = () =>
+      dialog.approve(
+        'Apply this operation and save its recovery backup?',
+        'apply',
+        'Type apply to approve this operation and its backup:',
+      );
     if (pending) {
       if (parsed.tokens.some((token) => token.kind === 'option' && token.name !== 'dry-run'))
         throw new Error(
@@ -38,14 +41,29 @@ export async function setup(project: Project, command: string, args: string[]) {
       command === 'full'
         ? 'full'
         : (presetFlag ??
-          (dry ? 'quickstart' : await ask('Choose a preset (minimal, quickstart, full):')));
+          (dry
+            ? 'quickstart'
+            : await dialog.select(
+                'Choose a preset',
+                presets.map((value) => ({ value, label: value })),
+                'quickstart',
+                'Choose a preset (minimal, quickstart, full):',
+              )));
     if (!selected || !presets.includes(selected))
       throw new Error('Choose minimal, quickstart, or full.');
     const skill =
       onboarding ??
       (command === 'full' || dry || presetFlag
         ? '--no-onboarding'
-        : await ask('Install guided onboarding skills for Claude Code and Codex? (yes/no)'));
+        : await dialog.select(
+            'Install guided onboarding skills?',
+            [
+              { value: 'yes', label: 'Yes' },
+              { value: 'no', label: 'No' },
+            ],
+            'no',
+            'Install guided onboarding skills for Claude Code and Codex? (yes/no)',
+          ));
     if (!skill || !['yes', 'no', '--onboarding', '--no-onboarding'].includes(skill))
       throw new Error('Choose yes or no for skill installation.');
     const initialized = project.classification === 'initialized';
@@ -55,7 +73,14 @@ export async function setup(project: Project, command: string, args: string[]) {
       trackingFlag ??
       (initialized || command === 'full' || dry || presetFlag
         ? 'mixed'
-        : await ask(
+        : await dialog.select(
+            'How should Git track this setup?',
+            [
+              { value: 'mixed', label: 'Mixed', hint: 'Recommended. Keep project knowledge local' },
+              { value: 'tracked', label: 'Shared', hint: 'Share rules and project knowledge' },
+              { value: 'local-only', label: 'Local only', hint: 'Ignore all kit files' },
+            ],
+            'mixed',
             'Tracking (mixed, tracked, local-only). Mixed keeps knowledge, decisions, and task records out of Git:',
           ));
     const { policy } = validateChoices(tracking, []);

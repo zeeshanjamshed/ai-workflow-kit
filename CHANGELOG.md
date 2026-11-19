@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Interactive menus, agent checkboxes, colour-aware summaries, and safe cancellation.
+- Clearer installed-baseline notices and manual onboarding handoff.
+- Bundled prompt dependencies and offline smoke installation with an empty npm cache.
+
 ## 0.4.6 - 2026-11-19
 
 Simplify guided setup and onboarding, preserve existing project knowledge, add managed rule and skill updates, and verify one immutable package through the protected release workflow.

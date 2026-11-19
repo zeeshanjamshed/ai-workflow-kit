@@ -55,3 +55,13 @@ The npm registry confirms v0.4.6 as `latest` with provenance. Its downloaded tar
 The publish command succeeded, but the workflow's registry confirmation timed out before the version became visible. The run therefore reports failure. Registry checks with a fresh cache subsequently confirmed publication; no second publish was attempted. The maintainer verification helper now refreshes registry metadata, allows a longer bounded wait, fails immediately on integrity mismatches, and reports uncertainty without republishing. Regression tests cover delayed visibility, a different archive, and persistent unavailability. These scripts are not shipped in the npm package.
 
 The maintainer follow-up passed format/lint/types/asset checks and all 80 local tests. It changes release tooling and records only; the published package bytes remain the verified archive above.
+
+## Approved terminal UI follow-up
+
+The owner approved Clack-based terminal prompts on November 19. Scope includes menus, multiple-agent selection, custom alias input, compact previews, colour support, safe cancellation, and preservation of piped input and dry-run output. Work remains local and unpublished; no commit, push, or new release is included in this approval.
+
+Clack 1.9.0 is MIT licensed and supports the kit's Node.js range. npm bundles its six runtime packages to preserve offline tarball installation with an empty cache. Existing v0.4.6 snapshots are unchanged. The other project's reported rule-block conflict has only been explained from the report and CLI code; no files in that project have been inspected or changed.
+
+Verification passed `npm run verify`, including all 81 tests, formatting, lint, types, immutable assets, build, inventory of 99 package files, and offline installation with an empty npm cache. Local candidate SHA-256: `3025028d8a462c05171e9095331f88d32153f5953531956f51f52af20c2f93f2`. Dependency installation reported zero audit vulnerabilities.
+
+Real macOS terminal checks covered arrow-key and Space selection, default-No setup approval with no file writes, Ctrl+C cancellation with exit 130, colour and NO_COLOR, approved setup, custom alias input with launch declined, and a compiled package installed offline from its archive. A disposable v0.4.2 project retained its baseline and displayed the explicit upgrade notice. Windows and Linux interactive terminals and hosted CI for these local changes remain unverified. No authenticated agent was launched.

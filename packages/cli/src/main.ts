@@ -11,6 +11,7 @@ import { coordinate } from './coordination.ts';
 import { initialize, parseChoices } from './initialize.ts';
 import { version } from './metadata.ts';
 import { guidedInit } from './guided-init.ts';
+import { DialogCancelled } from './terminal.ts';
 
 async function main() {
   const [command = '', ...args] = process.argv.slice(2);
@@ -92,6 +93,9 @@ async function main() {
 try {
   await main();
 } catch (error) {
-  console.error('Operation failed:', error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
+  if (error instanceof DialogCancelled) process.exitCode = 130;
+  else {
+    console.error('Operation failed:', error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  }
 }

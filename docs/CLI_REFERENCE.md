@@ -153,3 +153,9 @@ Read the [master specification](https://github.com/zeeshanjamshed/ai-workflow-ki
 Implementation will be incremental and reviewed before each stage. The first stable `v1.0.0` release will follow testing across new, existing, and AI-configured projects.
 
 The repository is licensed under the [MIT License](../LICENSE). See [Releasing AI Workflow Kit](https://github.com/zeeshanjamshed/ai-workflow-kit/blob/main/docs/RELEASING.md) for versioning, checks, and owner approval before publishing future versions.
+
+## Interactive terminal controls
+
+Use arrow keys to move, Space to toggle agents, and Enter to confirm a selection. Setup and launch confirmations default to No. Ctrl+C cancels the current prompt and exits with status 130. Already approved setup changes remain saved if onboarding launch is cancelled. Custom commands and aliases use a text input.
+
+Interactive setup and update show compact summaries. Use `--dry-run` to inspect the complete update data. Piped input and dumb terminals retain the plain input protocol. `NO_COLOR` disables colour while keeping interactive controls. The CLI reports an older installed baseline separately from its own version; rerunning `init` does not silently upgrade that baseline.

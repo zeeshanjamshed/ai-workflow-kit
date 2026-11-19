@@ -25,6 +25,13 @@ try {
     run(process.execPath, [process.env.npm_execpath, 'pack', '--json', '--ignore-scripts']),
   );
   const catalog = JSON.parse(currentAsset('catalog.json'));
+  const lock = JSON.parse(readFileSync(join(packageRoot, 'package-lock.json'), 'utf8'));
+  const bundledRoots = Object.entries(lock.packages)
+    .filter(([path, metadata]) => path.startsWith('node_modules/') && metadata.inBundle)
+    .map(([path]) => path);
+  const expectedBundles = bundledRoots.map((path) => path.slice('node_modules/'.length)).sort();
+  if (JSON.stringify([...packed.bundled].sort()) !== JSON.stringify(expectedBundles))
+    throw new Error('Bundled runtime dependencies do not match the lockfile.');
   const allowed = new Set([
     'package.json',
     'README.md',
@@ -41,9 +48,17 @@ try {
       .flat()
       .map((entry) => 'assets/current/' + entry.source),
     ...bundledVersions.map((release) => `assets/releases/${release}.json`),
+    ...bundledRoots.map((path) => path + '/package.json'),
   ]);
   const unexpected = packed.files.filter(
-    (file) => !allowed.has(file.path) && !/^dist\/packages\/cli\/src\/[\w-]+\.js$/.test(file.path),
+    (file) =>
+      !allowed.has(file.path) &&
+      !/^dist\/packages\/cli\/src\/[\w-]+\.js$/.test(file.path) &&
+      !bundledRoots.some(
+        (root) =>
+          file.path.startsWith(root + '/') &&
+          !file.path.split('/').some((part) => part === '..' || part === '.'),
+      ),
   );
   if (unexpected.length)
     throw new Error(`Unexpected package files: ${unexpected.map((file) => file.path).join(', ')}`);

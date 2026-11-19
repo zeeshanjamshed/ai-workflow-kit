@@ -18,6 +18,7 @@ import { test } from 'node:test';
 import { additionalPaths } from '../src/guided-init.ts';
 import { agentLaunch, chooseAgentLaunch, onboardingPrompt, runAgent } from '../src/agent-launch.ts';
 import { isLocalIgnoreEdit } from '../src/tracking.ts';
+import { templates, sha } from '../src/initialize.ts';
 
 const cli = fileURLToPath(new URL('../src/main.ts', import.meta.url));
 const manifest = '.ai/setup-manifest.json';
@@ -48,6 +49,38 @@ async function fixture(check: (root: string) => void | Promise<void>) {
     rmSync(root, { recursive: true, force: true });
   }
 }
+
+test('guided adoption clearly preserves an older installed baseline until update is approved', () =>
+  fixture((root) => {
+    const entries = templates({ policy: 'mixed', agents: ['codex'], version: '0.4.2' });
+    for (const { path, content } of entries) put(root, path, content);
+    put(
+      root,
+      manifest,
+      JSON.stringify({
+        owner: 'ai-workflow-kit',
+        version: '0.4.2',
+        tracking: 'mixed',
+        adapters: ['codex'],
+        preserved: [],
+        files: Object.fromEntries(
+          entries.map(({ path, content }) => [path, { sha256: sha(content) }]),
+        ),
+      }),
+    );
+    const result = run(root, ['init', '--no-launch'], '\napply\n');
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /Installed baseline 0\.4\.2 is preserved/);
+    assert.equal(JSON.parse(read(root, manifest)).version, '0.4.2');
+    assert.equal(
+      read(root, '.ai/rules/permissions.md'),
+      entries.find((entry) => entry.path === '.ai/rules/permissions.md')!.content,
+    );
+    const repeated = run(root, ['init', '--no-launch'], '\n');
+    assert.equal(repeated.status, 0, repeated.stderr);
+    assert.match(repeated.stdout, /already complete/);
+    assert.equal(JSON.parse(read(root, manifest)).version, '0.4.2');
+  }));
 
 test('guided init previews complete defaults and requires approval before writes', () =>
   fixture((root) => {

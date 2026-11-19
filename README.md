@@ -11,11 +11,11 @@ npm install --global @zeeshanjamshed/ai-workflow-kit
 ai-setup init
 ```
 
-It finds existing AI files, asks which agents you use and how to track the setup, then previews the complete rules and one onboarding skill. Type `apply` to install.
+It finds existing AI files, asks which agents you use and how to track the setup, then previews the complete rules and one onboarding skill. In a terminal, use arrow keys and Space to choose options, then confirm the preview. Piped input keeps the plain `apply` approval.
 
 Existing instructions, skills, decisions, and knowledge stay in place. The agent handles their review and proposed consolidation during onboarding. It asks you to resolve conflicting instructions before changing them.
 
-After setup, choose Claude, Codex, a custom command such as `claude-orca`, or later. Review the command and type `start` to launch onboarding. The agent reads the actual project and proposes useful knowledge. Saving or moving anything still needs your approval.
+After setup, choose Claude, Codex, a custom command such as `claude-orca`, or later. Review and confirm the command to launch onboarding. The agent reads the actual project and proposes useful knowledge. Saving or moving anything still needs your approval.
 
 Custom Bash and Zsh aliases must be defined in shell startup files. Windows, unsupported custom shells, and piped sessions receive a manual handoff. See [launch details](docs/AGENT_LAUNCH.md).
 
@@ -38,7 +38,7 @@ npm install --global @zeeshanjamshed/ai-workflow-kit
 ai-setup update
 ```
 
-It compares the installed baseline, local files, and the bundled release. Review the changes and type `apply`. Project knowledge and recorded exceptions stay yours. Conflicting local and central edits stop for review.
+It compares the installed baseline, local files, and the bundled release. Review and approve the changes. Project knowledge and recorded exceptions stay yours. Conflicting local and central edits stop for review.
 
 The update uses the installed CLI's bundle and works offline. It does not fetch a newer release itself. Older setups can adopt recognized stock rules and skills; customized legacy files remain project-owned.
 
@@ -61,7 +61,7 @@ npm ci --ignore-scripts
 npm pack
 ```
 
-Follow the [short trial guide](docs/TRIALS.md) to install it in an isolated location and try new and existing projects. The package has no runtime dependencies. Coding-agent sessions use their own accounts and services.
+Follow the [short trial guide](docs/TRIALS.md) to install it in an isolated location and try new and existing projects. The package includes its terminal prompt library for offline use. Coding-agent sessions use their own accounts and services.
 
 The main setup lives in each project's `.ai/` directory. Small native instruction files point agents to shared rules and context. Each project keeps its own rules, exceptions, knowledge, decisions, and handoffs. Kit updates never authorize project work.
 

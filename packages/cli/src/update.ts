@@ -1,4 +1,4 @@
-import { openDialog } from './terminal.ts';
+import { openDialog, interactiveTerminal, note, message } from './terminal.ts';
 import { parseOptions, stringOption } from './arguments.ts';
 import { versionPattern } from './metadata.ts';
 import { randomUUID } from 'node:crypto';
@@ -23,12 +23,41 @@ export { read as readSetupFile } from './file-operations.ts';
 async function approve(): Promise<boolean> {
   const dialog = openDialog();
   try {
-    return (
-      (await dialog.ask('Type apply to approve this operation and its backup:', false)) === 'apply'
+    return await dialog.approve(
+      'Apply this operation and save its recovery backup?',
+      'apply',
+      'Type apply to approve this operation and its backup:',
     );
   } finally {
     dialog.close();
   }
+}
+
+function printReport(
+  report: { action: string; edits: Edit[]; conflicts?: string[]; [key: string]: unknown },
+  dry: boolean,
+) {
+  if (!interactiveTerminal || dry) return console.log(json(report));
+  note(
+    [
+      ...(typeof report.installed === 'string' ? [`Installed baseline ${report.installed}`] : []),
+      ...(typeof report.bundle === 'string' ? [`Available baseline ${report.bundle}`] : []),
+      ...(typeof report.pin === 'string'
+        ? [`Pinned to ${report.pin}. Review unpinning separately to upgrade.`]
+        : []),
+      ...(report.pending ? ['Resume the previously saved plan.'] : []),
+      ...(report.backup ? [`Backup ${String(report.backup)}`] : []),
+      ...report.edits.map(
+        ({ path, before, after }) =>
+          `${after === null ? 'Remove' : before === null ? 'Add' : 'Update'} ${path}`,
+      ),
+      ...(report.conflicts ?? []).map((path) => `Conflict ${path}`),
+      ...(typeof report.review === 'string' ? [report.review] : []),
+      ...(!report.edits.length && !report.conflicts?.length ? ['No changes needed.'] : []),
+      'Use --dry-run to inspect the full changes before approval.',
+    ].join('\n'),
+    `${report.action} preview`,
+  );
 }
 
 export async function update(
@@ -75,7 +104,7 @@ export async function update(
         validateQuickstartEdits(root, transaction.edits, false),
         true,
       );
-    } else console.log(json({ pending: true, ...transaction }));
+    } else printReport({ pending: true, ...transaction }, dry);
   } else {
     let edits: Edit[];
     if (action === 'rollback') {
@@ -94,7 +123,7 @@ export async function update(
       } else if (original.action === 'rollback-quickstart') {
         throw new Error('Run quickstart to set up this project again.');
       }
-      console.log(json({ action, backup: original.id, edits }));
+      printReport({ action, backup: original.id, edits }, dry);
     } else if (action === 'quickstart') {
       const installed = read(root, manifestPath);
       const setup = installed === null ? undefined : parseManifest(installed);
@@ -131,18 +160,19 @@ export async function update(
         path: rulePath(name),
         content: read(root, rulePath(name)),
       }));
-      console.log(
-        json({
+      printReport(
+        {
           action,
           modules: activationInputs,
           edits,
           review: 'Review rule contents and existing instructions for conflicts before approval.',
-        }),
+        },
+        dry,
       );
     } else {
       const proposal = planUpdate((path) => read(root, path), action, values[0]);
       const { inputs, ...report } = proposal;
-      console.log(json({ action, bundle: version, ...report }));
+      printReport({ action, bundle: version, ...report }, dry);
       if (proposal.conflicts.length)
         throw new Error('Resolve conflicts manually before updating. No files were changed.');
       edits = proposal.edits;
@@ -166,7 +196,7 @@ export async function update(
     approval,
   });
   if (!applied) return false;
-  console.log(`Verified. Backup ID: ${transaction.id}`);
+  message(`Verified. Backup ID: ${transaction.id}`, 'success');
   if (transaction.action === 'quickstart' && !preset?.guided)
     printOnboardingHandoff(
       read(root, '.agents/skills/guided-project-onboarding/SKILL.md') !== null &&

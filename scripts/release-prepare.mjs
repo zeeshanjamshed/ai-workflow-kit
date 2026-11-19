@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import semver from 'semver';
@@ -32,7 +32,7 @@ try {
   const requested = semver.valid(target) ?? semver.inc(version, target);
   if (!requested || !semver.gt(requested, version))
     throw new Error('Choose a version newer than the current package version.');
-  if (command('git', ['rev-parse', '--show-toplevel']) !== packageRoot)
+  if (realpathSync(command('git', ['rev-parse', '--show-toplevel'])) !== realpathSync(packageRoot))
     throw new Error('Release preparation requires this package repository.');
   if (command('git', ['status', '--porcelain', '--untracked-files=normal']))
     throw new Error(

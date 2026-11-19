@@ -1,0 +1,2 @@
+# Keep source formatting and hashed asset contents identical on every platform.
+* text=auto eol=lf

@@ -1,0 +1,84 @@
+{
+  "groups": {
+    "full": [
+      {
+        "path": ".ai/rules/full/README.md",
+        "source": "rules/full/README.md"
+      },
+      {
+        "path": ".ai/rules/full/behavior.md",
+        "source": "rules/full/behavior.md"
+      },
+      {
+        "path": ".ai/rules/full/engineering.md",
+        "source": "rules/full/engineering.md"
+      },
+      {
+        "path": ".ai/rules/full/risk.md",
+        "source": "rules/full/risk.md"
+      },
+      {
+        "path": ".ai/rules/full/collaboration.md",
+        "source": "rules/full/collaboration.md"
+      },
+      {
+        "path": ".ai/workflows/feature.md",
+        "source": "workflows/feature.md"
+      },
+      {
+        "path": ".ai/workflows/debugging.md",
+        "source": "workflows/debugging.md"
+      },
+      {
+        "path": ".ai/workflows/review.md",
+        "source": "workflows/review.md"
+      },
+      {
+        "path": ".ai/workflows/risky-change.md",
+        "source": "workflows/risky-change.md"
+      }
+    ],
+    "rule:architecture": [
+      {
+        "path": ".ai/rules/engineering-architecture.md",
+        "source": "rules/engineering-architecture.md"
+      }
+    ],
+    "rule:security": [
+      {
+        "path": ".ai/rules/engineering-security.md",
+        "source": "rules/engineering-security.md"
+      }
+    ],
+    "rule:testing": [
+      {
+        "path": ".ai/rules/engineering-testing.md",
+        "source": "rules/engineering-testing.md"
+      }
+    ],
+    "rule:git": [
+      {
+        "path": ".ai/rules/engineering-git.md",
+        "source": "rules/engineering-git.md"
+      }
+    ],
+    "rule:workflows": [
+      {
+        "path": ".ai/rules/engineering-workflows.md",
+        "source": "rules/engineering-workflows.md"
+      }
+    ],
+    "skill:claude": [
+      {
+        "path": ".claude/skills/guided-project-onboarding/SKILL.md",
+        "source": "skills/guided-project-onboarding/SKILL.md"
+      }
+    ],
+    "skill:codex": [
+      {
+        "path": ".agents/skills/guided-project-onboarding/SKILL.md",
+        "source": "skills/guided-project-onboarding/SKILL.md"
+      }
+    ]
+  }
+}

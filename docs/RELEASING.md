@@ -1,69 +1,69 @@
-# Releasing AI Workflow Kit
+# Release the package
 
-This example publishes `@zeeshanjamshed/ai-workflow-kit@0.4.3` to the public npm registry. Use the actual approved version for each release. Publishing requires explicit owner approval for that version and the reviewed tarball.
+Publication is a separate owner-approved action. The local candidate remains unpublished. The workflow never commits, pushes, or creates tags.
 
-## 1. Prepare the master checkout
+## One-time account setup
 
-Use a clean checkout of the AI Workflow Kit repository, with Git and Node.js 22.18 or newer. Check that `origin` points to `zeeshanjamshed/ai-workflow-kit`. Resolve any local changes before updating.
+Do these only after the workflow files are reviewed and committed through an approved Git action.
 
-```sh
-git status --short --branch
-git remote -v
-git switch main
-git pull --ff-only origin main
-npm ci --ignore-scripts
-npm version 0.4.3 --no-git-tag-version
-```
+1. In GitHub repository settings, create an environment named `npm`. Restrict it to `main` and require the owner's approval. Configure the reviewer so the intended owner can approve the run; enabling prevention of self-review requires another reviewer.
+2. In npm package settings for `@zeeshanjamshed/ai-workflow-kit`, add a GitHub Actions trusted publisher for owner `zeeshanjamshed`, repository `ai-workflow-kit`, workflow `release.yml`, and environment `npm`. Permit direct publication. No long-lived publishing token is needed.
+3. After those protections are configured, set the environment variable `NPM_PUBLISH_ENABLED` to `true` in the GitHub `npm` environment. Leave it unset until setup is complete. GitHub may create an unprotected environment if a workflow names one that does not exist; the variable gate keeps a fresh setup from publishing accidentally.
 
-The version command updates `package.json` and `package-lock.json` without creating a tag or commit. Update the exported version in `packages/cli/src/initialize.ts` to match. Keep the outgoing baseline in `bundledVersions` and preserve its exact template contents. If the new baseline inherits version-specific template text, include the new version in the relevant conditions. Review the diff for unintended template or dependency changes.
+These are account settings, not changes the local workflow files can enforce by themselves. Keep npm account 2FA enabled. Do not add npm publishing tokens to repository secrets. Trusted publishing needs npm 11.5.1 or newer; workflows pin npm 11.11.0.
 
-## 2. Build and inspect the candidate
+## Prepare a release
+
+After the code changes are reviewed and committed, run one command from a clean kit checkout.
 
 ```sh
-npm run typecheck
-npm test
-npm pack --json
-npm run test:package
-npm audit --audit-level=high
-tar -tzf zeeshanjamshed-ai-workflow-kit-0.4.3.tgz
-shasum -a 256 zeeshanjamshed-ai-workflow-kit-0.4.3.tgz
+npm run release:prepare -- patch --notes "Add the reviewed engineering rule."
 ```
 
-The package smoke test installs the tarball in isolation and runs the installed CLI. Check that the archive contains the expected compiled CLI modules, including `dist/packages/cli/src/main.js`, plus `package.json`, `README.md`, and `LICENSE`. Review packed metadata, license, and file contents. Stop if you find unexpected files, credentials, private paths or project data. Keep the inspected tarball and record its SHA-256 (use `sha256sum` if `shasum` is unavailable) and the integrity from the pack output so you can identify the exact artifact later.
+Use `minor`, `major`, or an explicit new version when appropriate. Choose the version based on compatibility. For a preview release, use an explicit version such as `0.5.0-rc.1`.
 
-## 3. Commit and verify CI
-
-Review and commit the approved release changes, then publish the commit to GitHub `main` through the authorized repository workflow. Keep the tarball out of Git. On GitHub Actions, verify that all six CLI checks passed **on that commit**: Linux, macOS, and Windows with both Node.js 22 and 24. Record the commit SHA and CI URL alongside the tarball checksum.
-
-## 4. Verify npm access and get approval
+The command uses `npm version` to update package metadata and the lockfile, generates the new immutable asset snapshot, and adds dated changelog notes. Old snapshots are retained. It creates no commit or tag. Review its diff and run:
 
 ```sh
-npm whoami --registry https://registry.npmjs.org/
-npm view @zeeshanjamshed/ai-workflow-kit@0.4.3 version --registry https://registry.npmjs.org/
+npm run verify
 ```
 
-Confirm the signed-in account owns the `@zeeshanjamshed` scope or has publish rights to the package. For an existing package, review its maintainers and access in npm. Complete any npm authentication or two-factor prompts through npm's own flow. If the target version already exists, stop and verify it. If the lookup fails for a reason other than the version being absent, resolve that before proceeding.
+This runs formatting, lint, types, asset checks, all tests, a clean build, package inventory checks, and offline installation of the resulting tarball. Fix the cause of any failure. Generated assets must not be hand-edited to hide an incompatibility.
 
-Give the owner the version, commit, CI link, package inventory, and tarball checksum. After explicit approval, recheck the checksum and publish that exact archive once:
+If preparation stops after npm updates metadata, inspect the working tree before retrying. Do not delete old release snapshots or overwrite unrelated work. The generated changes remain reviewable; nothing has been committed or published.
 
-```sh
-npm publish ./zeeshanjamshed-ai-workflow-kit-0.4.3.tgz --access public --registry https://registry.npmjs.org/
-```
+Obtain approval to commit and push the reviewed release changes. Do not use implementation-phase numbers as release versions. The CLI reads its current version from package.json.
 
-## 5. Verify the public release
+## Check and publish
 
-Run these from a disposable Git checkout so the Quickstart preview is isolated:
+In GitHub Actions, select **Release npm package**, choose `main`, and enter the exact prepared version.
 
-```sh
-npm view @zeeshanjamshed/ai-workflow-kit@0.4.3 version dist.integrity --registry https://registry.npmjs.org/
-npx -y @zeeshanjamshed/ai-workflow-kit@0.4.3 --version
-npx -y @zeeshanjamshed/ai-workflow-kit@0.4.3 quickstart --dry-run
-```
+- Leave **publish** off for a build-and-test trial.
+- Turn **publish** on only when publication is intended. Checks still run before the environment approval.
 
-Expect version `0.4.3` and a preview with no project writes. Compare the registry integrity value with the inspected tarball's `npm pack --json` integrity. If npm accepted publication but the version is temporarily missing or npx returns 404, wait a few minutes and retry the read-only checks against the public registry. Do not republish. If it stays missing, check npm status, account permissions, and the original command output.
+The workflow builds one tarball on Linux, records its source commit and checksums, and uploads it as an immutable artifact. Six jobs run source checks and install the same tarball on Linux, macOS, and Windows with Node.js 22 and 24. npm audit must pass. A failed check blocks publication.
 
-## 6. Update existing projects
+Review the source commit, release notes, results, artifact inventory, and SHA-256 in the run summary. The `publish` job then waits for the configured environment approval. After approval, it downloads the artifact by ID, verifies the version, commit, and checksum again, and publishes those exact bytes with lifecycle scripts disabled. The publish job alone receives OIDC permission.
 
-If you installed the CLI globally, update it first with `npm install --global @zeeshanjamshed/ai-workflow-kit@0.4.3`. In the project, run `ai-setup update --dry-run`, or use `npx -y @zeeshanjamshed/ai-workflow-kit@0.4.3 update --dry-run`. Review the proposed edits and resolve conflicts without overwriting local customizations. Respect project pins. After project-owner approval, rerun without `--dry-run` and type `apply`. Record the backup ID for an approved `ai-setup rollback <backup-id>` if needed.
+npm trusted publishing supplies short-lived credentials and, for this public repository/package, automatic provenance. Stable versions use the `latest` npm tag. Versions containing a prerelease suffix use `next`.
 
-See [npm's scoped public package guide](https://docs.npmjs.com/creating-and-publishing-scoped-public-packages/) and the [release-readiness report](RELEASE_READINESS.md).
+The workflow verifies the registry's integrity value after publishing. If publication succeeded but registry verification failed, inspect npm state before doing anything else. Never assume that rerunning a failed workflow means the version was not published. npm versions cannot be overwritten.
+
+GitHub release notes and Git tags remain separate explicit Git actions. Use the verified source commit if the owner approves creating them.
+
+## Edit or add rules
+
+- Edit Markdown in `assets/current/`.
+- Add a new asset's destination and source to `assets/current/catalog.json` under its relevant installed component.
+- Prepare a new version before final verification. Existing projects can then review the new baseline through `update`.
+- Never edit `assets/releases/*.json`. These preserve exact historical contents and every supported tracking/agent variant.
+
+`assets:freeze` refuses to replace a different snapshot. Release preparation creates a snapshot for the new version automatically. Runtime dependencies remain empty; asset loading uses Node.js built-ins.
+
+## Official guidance
+
+- [npm trusted publishing and automatic provenance](https://docs.npmjs.com/trusted-publishers/)
+- [npm version](https://docs.npmjs.com/cli/v11/commands/npm-version/)
+- [npm lifecycle scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts/)
+- [GitHub environments and approval protections](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments)
+- [GitHub artifact immutability](https://github.com/actions/upload-artifact)

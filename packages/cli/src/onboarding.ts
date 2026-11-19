@@ -1,3 +1,4 @@
+import { parseOptions } from './arguments.ts';
 import { bundledRule, guide, modules, onboardingSkills } from './setup-assets.ts';
 import { ruleAdapters, rulePath, splitRuleBlock } from './rule-activation.ts';
 import { update } from './update.ts';
@@ -13,33 +14,71 @@ const slug = /^[a-z0-9][a-z0-9-]{0,63}$/;
 type Addition = { path: string; content: string };
 
 function ruleInventory(project: Project) {
-  const adapters = ruleAdapters(project).map(path => ({
-    path, names: splitRuleBlock(path, readProjectFile(project.root, path) ?? '').names,
+  const adapters = ruleAdapters(project).map((path) => ({
+    path,
+    names: splitRuleBlock(path, readProjectFile(project.root, path) ?? '').names,
   }));
-  return Object.keys(modules).map(name => {
+  return Object.keys(modules).map((name) => {
     const path = rulePath(name);
     const content = readProjectFile(project.root, path);
-    const selectedBy = adapters.filter(adapter => adapter.names.includes(name)).map(adapter => adapter.path);
-    return { name, path, present: content !== undefined, selected: selectedBy.length > 0, selectedBy,
-      provenance: content === undefined ? 'missing' : content === bundledRule(name) ? 'matches-bundle' : 'project-owned' };
+    const selectedBy = adapters
+      .filter((adapter) => adapter.names.includes(name))
+      .map((adapter) => adapter.path);
+    return {
+      name,
+      path,
+      present: content !== undefined,
+      selected: selectedBy.length > 0,
+      selectedBy,
+      provenance:
+        content === undefined
+          ? 'missing'
+          : content === bundledRule(name)
+            ? 'matches-bundle'
+            : 'project-owned',
+    };
   });
 }
 
 function trackedFiles(project: Project) {
   const files = git(project.root, ['ls-files', '--cached', '--full-name', '-z']);
-  return files?.split('\0').filter(path => path && !sensitivePath.test(path)).sort() ?? [];
+  return (
+    files
+      ?.split('\0')
+      .filter((path) => path && !sensitivePath.test(path))
+      .sort() ?? []
+  );
 }
 
-const sensitivePath = /(?:^|\/)(?:\.env[^/]*|\.npmrc|\.netrc|\.git|[^/]*\.(?:pem|key|p12|pfx))(?=\/|$)/i;
+const sensitivePath =
+  /(?:^|\/)(?:\.env[^/]*|\.npmrc|\.netrc|\.git|[^/]*\.(?:pem|key|p12|pfx))(?=\/|$)/i;
 
-function evidence(project: Project, tracked: Set<string>, path: unknown, line: unknown, excerpt: unknown) {
-  if (typeof path !== 'string' || sensitivePath.test(path) || path.startsWith('.ai/') ||
-      !tracked.has(path) || typeof line !== 'number' || !Number.isSafeInteger(line) || line < 1 ||
-      typeof excerpt !== 'string' || !excerpt.trim() || excerpt.length > 300) {
-    throw new Error('Verified facts require a tracked source path, line number, and short exact excerpt.');
+function evidence(
+  project: Project,
+  tracked: Set<string>,
+  path: unknown,
+  line: unknown,
+  excerpt: unknown,
+) {
+  if (
+    typeof path !== 'string' ||
+    sensitivePath.test(path) ||
+    path.startsWith('.ai/') ||
+    !tracked.has(path) ||
+    typeof line !== 'number' ||
+    !Number.isSafeInteger(line) ||
+    line < 1 ||
+    typeof excerpt !== 'string' ||
+    !excerpt.trim() ||
+    excerpt.length > 300
+  ) {
+    throw new Error(
+      'Verified facts require a tracked source path, line number, and short exact excerpt.',
+    );
   }
   const content = readProjectFile(project.root, path);
-  if (!content?.split(/\r?\n/)[line - 1]?.includes(excerpt)) throw new Error(`Evidence does not match ${path}:${line}.`);
+  if (!content?.split(/\r?\n/)[line - 1]?.includes(excerpt))
+    throw new Error(`Evidence does not match ${path}:${line}.`);
   return `${path}:${line}`;
 }
 
@@ -52,44 +91,75 @@ function prose(value: unknown): string {
 
 function knowledge(project: Project, input: string): Addition[] {
   const records: unknown = JSON.parse(input);
-  if (!Array.isArray(records) || !records.length || records.length > 12) throw new Error('Provide 1–12 knowledge records.');
+  if (!Array.isArray(records) || !records.length || records.length > 12)
+    throw new Error('Provide 1–12 knowledge records.');
   const ids = new Set<string>();
   const tracked = new Set(trackedFiles(project));
-  return records.map(item => {
+  return records.map((item) => {
     if (!item || typeof item.id !== 'string' || !slug.test(item.id) || ids.has(item.id)) {
       throw new Error('Each record needs a unique lowercase ID.');
     }
     ids.add(item.id);
     const { facts, hypotheses, questions } = item;
-    if (![facts, hypotheses, questions].every(list => Array.isArray(list) && list.length <= 30) ||
-        facts.length + hypotheses.length + questions.length === 0) {
-      throw new Error('Provide facts, hypotheses, and questions arrays with up to 30 entries each.');
+    if (
+      ![facts, hypotheses, questions].every((list) => Array.isArray(list) && list.length <= 30) ||
+      facts.length + hypotheses.length + questions.length === 0
+    ) {
+      throw new Error(
+        'Provide facts, hypotheses, and questions arrays with up to 30 entries each.',
+      );
     }
     const sections: [string, string[]][] = [
-      ['Verified facts', facts.map((fact: { text: unknown; path: unknown; line: unknown; excerpt: unknown }) =>
-        `${prose(fact.text)} (source: \`${evidence(project, tracked, fact.path, fact.line, fact.excerpt)}\`)`)],
+      [
+        'Verified facts',
+        facts.map(
+          (fact: { text: unknown; path: unknown; line: unknown; excerpt: unknown }) =>
+            `${prose(fact.text)} (source: \`${evidence(project, tracked, fact.path, fact.line, fact.excerpt)}\`)`,
+        ),
+      ],
       ['Hypotheses', hypotheses.map(prose)],
       ['Open questions', questions.map(prose)],
     ];
     return {
       path: `.ai/knowledge/${item.id}.md`,
-      content: `# ${prose(item.title)}\n` + sections.filter(([, values]) => values.length)
-        .map(([heading, values]) => `\n## ${heading}\n\n${values.map(value => '- ' + value).join('\n')}\n`).join(''),
+      content:
+        `# ${prose(item.title)}\n` +
+        sections
+          .filter(([, values]) => values.length)
+          .map(
+            ([heading, values]) =>
+              `\n## ${heading}\n\n${values.map((value) => '- ' + value).join('\n')}\n`,
+          )
+          .join(''),
     };
   });
 }
 
 function writePlan(project: Project, entries: Addition[]) {
   const manifest = readObject(readProjectFile(project.root, manifestPath));
-  if (manifest?.owner !== 'ai-workflow-kit' || !['tracked', 'mixed', 'local-only'].includes(String(manifest.tracking))) {
-    throw new Error('Run approved ai-setup init before adding onboarding records, skills, or rules.');
+  if (
+    manifest?.owner !== 'ai-workflow-kit' ||
+    !['tracked', 'mixed', 'local-only'].includes(String(manifest.tracking))
+  ) {
+    throw new Error(
+      'Run approved ai-setup init before adding onboarding records, skills, or rules.',
+    );
   }
-  const review = entries.map(entry => {
+  const review = entries.map((entry) => {
     const present = exists(safePath(project.root, entry.path));
-    const status = !present ? 'add' : readProjectFile(project.root, entry.path) === entry.content ? 'keep' : 'conflict';
-    if (status === 'add' && project.git.detected &&
-        (manifest.tracking === 'local-only' || manifest.tracking === 'mixed' && entry.path.startsWith('.ai/knowledge/')) &&
-        (inspectGitPath(project.root, entry.path, 'tracked') !== false || inspectGitPath(project.root, entry.path, 'ignored') !== true)) {
+    const status = !present
+      ? 'add'
+      : readProjectFile(project.root, entry.path) === entry.content
+        ? 'keep'
+        : 'conflict';
+    if (
+      status === 'add' &&
+      project.git.detected &&
+      (manifest.tracking === 'local-only' ||
+        (manifest.tracking === 'mixed' && entry.path.startsWith('.ai/knowledge/'))) &&
+      (inspectGitPath(project.root, entry.path, 'tracked') !== false ||
+        inspectGitPath(project.root, entry.path, 'ignored') !== true)
+    ) {
       throw new Error(`Git must ignore and leave untracked the private path ${entry.path}.`);
     }
     return { ...entry, status };
@@ -97,22 +167,55 @@ function writePlan(project: Project, entries: Addition[]) {
   return review;
 }
 
-export async function onboard(project: Project, command: 'onboard' | 'rules', args: string[]): Promise<void> {
+export async function onboard(
+  project: Project,
+  command: 'onboard' | 'rules',
+  inputArgs: string[],
+): Promise<void> {
   const { root } = project;
+  const parsed = parseOptions(command, inputArgs);
+  const args = parsed.positionals;
+  const dry = Boolean(parsed.values['dry-run']);
   if (command === 'rules' && args[0] === 'activate') {
-    await update(project, 'activate-rules', args.slice(1));
+    await update(project, 'activate-rules', [...args.slice(1), ...(dry ? ['--dry-run'] : [])]);
     return;
   }
   if (!args.length) {
-    console.log(JSON.stringify(command === 'rules'
-      ? { modules: ruleInventory(project), existingInstructions: project.agents.flatMap(agent => agent.paths) }
-      : {
-          project, trackedFiles: trackedFiles(project).slice(0, 300), inventoryLimit: 300,
-          context: resumeContext(project), skills: discoverSkills(project, realpathSync(process.cwd())),
-          guide, knowledgeSchema: [{ id: 'short-id', title: 'Title',
-            facts: [{ text: 'Fact', path: 'relative/source.ts', line: 1, excerpt: 'Exact source text' }],
-            hypotheses: ['Hypothesis'], questions: ['Question'] }],
-        }, null, 2));
+    console.log(
+      JSON.stringify(
+        command === 'rules'
+          ? {
+              modules: ruleInventory(project),
+              existingInstructions: project.agents.flatMap((agent) => agent.paths),
+            }
+          : {
+              project,
+              trackedFiles: trackedFiles(project).slice(0, 300),
+              inventoryLimit: 300,
+              context: resumeContext(project),
+              skills: discoverSkills(project, realpathSync(process.cwd())),
+              guide,
+              knowledgeSchema: [
+                {
+                  id: 'short-id',
+                  title: 'Title',
+                  facts: [
+                    {
+                      text: 'Fact',
+                      path: 'relative/source.ts',
+                      line: 1,
+                      excerpt: 'Exact source text',
+                    },
+                  ],
+                  hypotheses: ['Hypothesis'],
+                  questions: ['Question'],
+                },
+              ],
+            },
+        null,
+        2,
+      ),
+    );
     return;
   }
 
@@ -123,35 +226,62 @@ export async function onboard(project: Project, command: 'onboard' | 'rules', ar
     if (command === 'onboard' && args.length === 1 && args[0] === 'save') {
       console.log('Enter the one-line JSON proposal from the onboarding guide.');
       const proposal = await lines.next();
-      if (proposal.done || Buffer.byteLength(proposal.value) > 128 * 1024) throw new Error('Missing or oversized proposal.');
+      if (proposal.done || Buffer.byteLength(proposal.value) > 128 * 1024)
+        throw new Error('Missing or oversized proposal.');
       build = () => knowledge(project, proposal.value);
-    } else if (command === 'onboard' && args[0] === 'install-skills' && args.length === 2 && /^(claude|codex|both)$/.test(args[1])) {
+    } else if (
+      command === 'onboard' &&
+      args[0] === 'install-skills' &&
+      args.length === 2 &&
+      /^(claude|codex|both)$/.test(args[1])
+    ) {
       build = () => onboardingSkills(args[1]);
     } else if (command === 'rules') {
-      const names = args[0] === 'minimal' && args.length === 1 ? []
-        : args[0] === 'recommended' && args.length === 1 ? Object.keys(modules)
-        : args[0] === 'custom' ? args.slice(1) : undefined;
-      if (!names || names.some(name => !Object.hasOwn(modules, name)) || new Set(names).size !== names.length) {
-        throw new Error('Use rules minimal, rules recommended, or rules custom [architecture security testing git workflows].');
+      const names =
+        args[0] === 'minimal' && args.length === 1
+          ? []
+          : args[0] === 'recommended' && args.length === 1
+            ? Object.keys(modules)
+            : args[0] === 'custom'
+              ? args.slice(1)
+              : undefined;
+      if (
+        !names ||
+        names.some((name) => !Object.hasOwn(modules, name)) ||
+        new Set(names).size !== names.length
+      ) {
+        throw new Error(
+          'Use rules minimal, rules recommended, or rules custom [architecture security testing git workflows].',
+        );
       }
-      build = () => names.map(name => ({
-        path: rulePath(name),
-        content: bundledRule(name),
-      }));
-    } else throw new Error('Use onboard, onboard save, or onboard install-skills claude|codex|both.');
+      build = () =>
+        names.map((name) => ({
+          path: rulePath(name),
+          content: bundledRule(name),
+        }));
+    } else
+      throw new Error('Use onboard, onboard save, or onboard install-skills claude|codex|both.');
 
     const entries = build();
     const plan = writePlan(project, entries);
-    console.log(JSON.stringify({
-      files: plan, existingInstructions: project.agents.flatMap(agent => agent.paths),
-      notes: [
-        'Review existing instructions for conflicting requirements before applying.',
-        'The plan creates only missing files. Existing content stays in place.',
-        'Use rules activate to attach existing modules to normal agent sessions. Minimal adds no modules.',
-      ],
-    }, null, 2));
-    if (plan.some(entry => entry.status === 'conflict')) throw new Error('Existing content differs. Review the conflict before proceeding.');
-    if (!plan.some(entry => entry.status === 'add')) return;
+    console.log(
+      JSON.stringify(
+        {
+          files: plan,
+          existingInstructions: project.agents.flatMap((agent) => agent.paths),
+          notes: [
+            'Review existing instructions for conflicting requirements before applying.',
+            'The plan creates only missing files. Existing content stays in place.',
+            'Use rules activate to attach existing modules to normal agent sessions. Minimal adds no modules.',
+          ],
+        },
+        null,
+        2,
+      ),
+    );
+    if (plan.some((entry) => entry.status === 'conflict'))
+      throw new Error('Existing content differs. Review the conflict before proceeding.');
+    if (dry || !plan.some((entry) => entry.status === 'add')) return;
     console.log('Type apply to approve these additions:');
     const approval = await lines.next();
     if (approval.done || approval.value.trim() !== 'apply') return;
@@ -160,7 +290,8 @@ export async function onboard(project: Project, command: 'onboard' | 'rules', ar
     }
     for (const { path, content, status } of plan) {
       if (status === 'add') install(root, { path, content });
-      if (readProjectFile(root, path) !== content) throw new Error(`Verification failed for ${path}.`);
+      if (readProjectFile(root, path) !== content)
+        throw new Error(`Verification failed for ${path}.`);
     }
     console.log('Verified additions. Rerun this command to review or resume.');
   } finally {

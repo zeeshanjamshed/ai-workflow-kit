@@ -1,7 +1,9 @@
 # AI Workflow Kit — Master Specification
 
-**Status:** Approved design baseline; implementation not started  
-**Date:** 9 November 2026  
+The [agreed simplification](SIMPLIFICATION.md) records the approved November 18 direction and takes precedence over conflicting older proposals below. Implementation is phased; the document distinguishes target behavior from existing commands.
+
+**Status:** Approved requirements with the November 18 simplification; v0.4.5 local candidate implemented
+**Date:** 9 November 2026; clarified 19 November 2026
 **Repository:** https://github.com/zeeshanjamshed/ai-workflow-kit  
 **Proposed CLI:** `ai-setup`  
 **Scope:** Consolidates the agreed requirements and proposes their technical implementation. Detailed mechanisms and file layouts remain subject to validation during development.
@@ -29,7 +31,7 @@ A public master repository distributes the **starting standards and tooling**. A
 
 - Read-only exploration, safe research, code inspection, and genuinely non-destructive checks can proceed without asking.
 - Before changing anything, present a concise understanding, verified findings where relevant, numbered plan, material risks, and the first approval request.
-- **Default: approve each step separately.** Explain the step simply, wait, execute only the approved scope, verify safely, report, then ask for the next step.
+- **Approval scope:** propose and approve a small bounded task once. For large work, use clear phases and approve each phase. Honor explicit whole-plan approval without repeated requests for listed steps.
 - If you explicitly approve executing **the whole plan**, the agent may complete its stated steps; a broad approval never authorizes unlisted actions.
 - **Any writes or side effects require approval:** project files, databases, remote APIs, migrations, external systems, infrastructure, deployments, package changes, Git commits/pushes/merges/PRs, and documentation changes. A test that writes data is not “read-only.” If safety is unclear, ask before running it.
 - Minor obstacles can be handled inside an already approved scope; significant surprises, new risks, and out-of-scope changes require stopping and asking.
@@ -128,7 +130,7 @@ project/
 
 **Agent adapter rule:** mandatory short permissions and navigation instructions must be genuinely visible through each tool's supported discovery mechanism, not hidden behind an unvisited link. Shared details remain in `.ai/`. Per-module adapters are optional. Verify real behavior rather than assuming file presence guarantees compliance.
 
-## 7. Master repository layout (proposed design, not yet created)
+## 7. Master repository responsibility map (illustrative)
 
 ```text
 ai-workflow-kit/
@@ -161,12 +163,12 @@ ai-workflow-kit/
 
 This is an **intended responsibility map**, not a requirement to create every file or directory at once. Organize real code as implementation warrants; avoid unnecessary packages or services. The master contains **templates and standards**, never any customer's project-specific records or secrets.
 
-**Public repository note:** public code without an explicit license is not automatically licensed for others to redistribute or adapt. Before inviting general reuse, select a license with your approval.
+**Public repository note:** public code without an explicit license is not automatically licensed for others to redistribute or adapt. This repository uses the MIT License; preserve its copyright and license text.
 
 ## 8. CLI and distribution
 
 - The npm package distributes a tested, versioned CLI with bundled, pinned rules/templates/prompts. GitHub hosts the master source; normal initialization must **not** silently fetch a mutable `main` branch.
-- Proposed package identifier (subject to availability): `@zeeshanjamshed/ai-workflow-kit`; CLI binary: `ai-setup`. Example after publishing: `npx @zeeshanjamshed/ai-workflow-kit init` or globally installed `ai-setup init`. These commands **do not exist yet**.
+- Package identifier: `@zeeshanjamshed/ai-workflow-kit`; CLI binary: `ai-setup`. Package invocation: `npx @zeeshanjamshed/ai-workflow-kit init` or globally installed `ai-setup init`. The guided complete `init` flow is implemented in the local candidate. The last recorded public release uses the older initialization flow.
 - Commands: `init`, `init --dry-run`, `update`, `doctor`, optional context/mode/agent flags. Read-only non-interactive `doctor`/validation can support CI. Initialization and modification stay approval-driven.
 - Cross-platform: macOS, Linux, Windows; no compulsory Claude or Codex installation just to run CLI. Detect supported agents and let the user choose or receive a prompt for an IDE-only flow.
 - CLI handles deterministic discovery, template selection, previews, provenance/version tracking, conflict detection, backups, updates, health checks, and verification. AI agent handles intelligent repository/domain analysis. Avoid building a bespoke LLM platform into the CLI.
@@ -201,9 +203,9 @@ Try non-destructive repair first. If irreparable, offer a clearly scoped rebuild
 
 ## 9. Multi-agent collaboration
 
-- You coordinate Claude and Codex; no mandatory third agent. Normal development remains simple and can use one working tree. Separate branches/worktrees only on explicit request.
+- The owner chooses agents and confirms the base branch and normal checkout versus worktree before changes. Recommend isolated branches/worktrees for simultaneous agents, create them only within approval, and preserve others’ work. Include safe task-owned cleanup in the completion plan.
 - For simultaneous work, agents record active task, status, likely affected code areas, and handoff information, then check for overlap before writing. Flag conflicts and seek your decision.
-- **Worktrees do not share ordinary working-file edits.** The Git common directory may host *local, temporary coordination state* shared among worktrees of the **same clone** (only after approval to create it). Actual durable project knowledge stays in `.ai/` and is synchronized across branches/clones only through an approved Git or other explicit sync workflow. Never claim automatic cross-machine sharing when files are ignored/uncommitted.
+- **Worktrees do not share ordinary working-file edits.** The Git common directory may host _local, temporary coordination state_ shared among worktrees of the **same clone** (only after approval to create it). Actual durable project knowledge stays in `.ai/` and is synchronized across branches/clones only through an approved Git or other explicit sync workflow. Never claim automatic cross-machine sharing when files are ignored/uncommitted.
 - Use a lightweight shared task ownership/lock mechanism only when parallel work is enabled; avoid permanent locks or a heavyweight coordinator. Detect stale ownership and revalidate after relevant code changes.
 - Handoffs record verified work, outstanding questions, tests, and next steps; receiving agents check relevant claims against code/Git without repeating the entire investigation.
 - Skills and global settings installed outside a repository are not automatically portable; inventory and verify their presence per environment.

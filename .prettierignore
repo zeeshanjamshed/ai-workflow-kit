@@ -1,0 +1,7 @@
+node_modules/
+dist/
+release/
+*.tgz
+package-lock.json
+# These bytes are versioned update baselines, not presentation formatting.
+assets/

@@ -1,0 +1,1258 @@
+{
+  "version": "0.1.0",
+  "templates": {
+    "[\"tracked\",[]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "37f5b399d6e77d5503894a1ca39ab61498cd2360589f77f84dda8b2188600f29"
+      }
+    ],
+    "[\"tracked\",[\"codex\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "070b3c13afa3da6c4fc0ab6e3bdeabd4598976f2d86bedb0def711c417401e32"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"codex\",\"claude\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "bb8397f2d7cbff1f0d9a58686a3c00053bb54127d9cda4ed4b3f582f2ee4c7be"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"codex\",\"claude\",\"cursor\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "54541cb349a683f665d296ba652728679a4659e3a9f7bb77b51d02b12f369daf"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"tracked\",[\"codex\",\"cursor\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "d32c00db6ca5f5cf85cbb61c6a5d2deeb8be3e91e2b1d66828e28fbbe288f1f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"tracked\",[\"codex\",\"cursor\",\"claude\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "f1651529168a575d70c72b3138dfb820d4c45b1cb3ad5adc3e3f5f366a817107"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"claude\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "8f9cc183ebc6a3826ff7c2d56ce59fcee4347023718a61078719b9580e15647e"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"claude\",\"codex\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "24d9c07c278783bac504bf294f335bf97a6f4586fd3528ae449aca9b0c9a24f0"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"claude\",\"codex\",\"cursor\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "730cd513fb9da0e992e7cb889a7d8242618a4a799c81be131195bbfd0a4dcfd3"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"tracked\",[\"claude\",\"cursor\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "063cb734d2f6562a988d9f754df882078c8aba89bc9be9611ef96dd3f59deea4"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"tracked\",[\"claude\",\"cursor\",\"codex\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "c6c4f92e5cf21c24a4ee062d9e8c03d542e96255f9ba0d004c663df3e9658d66"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"cursor\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "4c6c6be335026fddb9ce22fc626108339a6fa4f3c740cc08d70c66b0f58bef61"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"tracked\",[\"cursor\",\"codex\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "e0c00bf2e49c9f2cbcb41db3cc388ec81e6118a68ef9ca56d6d45e0eed8ce7ea"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"cursor\",\"codex\",\"claude\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "e3731a9291fddd85195c2aaf4c3ea6bb21f25a938dba1e5066f2d13f11528993"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"cursor\",\"claude\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "7dae07facca1aa13e78546780edce1947f2864a20265c0ca935553b9e8928fd3"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"tracked\",[\"cursor\",\"claude\",\"codex\"]]": [
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "d640f7371ee2a5744ca0af225e43def48cbaf6d04261eeebf234c2b5f7b34687"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "eeb9e046436ab2d7e198da7de5ab45e05d6439b57c9b5042efe9385d91e27c9e"
+      }
+    ],
+    "[\"mixed\",[\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "bc8ae2c072fa8057fff32cf7589d165c1ce42df313ae85cf55f1c6ed58483b5a"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"codex\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "20ea85c5ac4441c6137022e1d021dd69b55e41a7c1c26943f116570d4af6bbd1"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"codex\",\"claude\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "1cc0934fa5cd6f1aad1ab155fc2f26c218a6253e51596128adc36755530f26b0"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"mixed\",[\"codex\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "e4072da79fcacaaa4ac0334072c16c0540c684de8d2857cafff635bb49cccbab"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"mixed\",[\"codex\",\"cursor\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "6e22d746ac330c54148606deae66a6e0efad7894f15ee10199b7ba66c4a95850"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "6ecf465a8671be3175935f3e8e23bef9bd8f96409aea0f32cd8358172d5c8c48"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"claude\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "7c06d84c3c2d20719d1bd82e5eba9bb7687de0a607e0a31169c0b68e4ecedda2"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"claude\",\"codex\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "8dfa77652900e676497144510ac36fe519bb114ef76b6f6a68d66c0e59a75391"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"mixed\",[\"claude\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "137bed0bafa5c7e058c96fff7154a93491ecfb68581b29acf214926ea6b0d4da"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"mixed\",[\"claude\",\"cursor\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "f43a90fd10eed5b517a6171ef95ed8796fbfa71e32b23335619ecd340e08aab2"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "5bd0a1d181039542f420740a683e52a3f12153ed93f8edab261f9b01215861c8"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"mixed\",[\"cursor\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "2e4933ac47084bc46cb8028f116f84ef86ea8f314910dc3bd6ebee4275a4c0e4"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"cursor\",\"codex\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "c0cbb640100be04968f9e008b09a423a80391e6319865a9ed0183a688e2e2cb2"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"cursor\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "de8613016f6e2e4cb0ca2f38ac0927379a5fbd4fa8aef2df8432ac54edb3c63c"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"mixed\",[\"cursor\",\"claude\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "29dc1f5601c51f1f5ee5e6bb2f3be4d7c5aa04c6d15c056472fca4e923993c0d"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "89594fca48dc2be40d1ebbd73c21af64fc7a799f56881cfa59a719a2f016daa2"
+      }
+    ],
+    "[\"local-only\",[\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "d1029dbf4b5358913bf3d525191a7258c170345216d38acd5ab069b21c0465a4"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"codex\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "53208ed39215801ec9a528f445b9ccf4c08805b2553bd1d78b3d1ef1eb8f75a2"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"codex\",\"claude\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "b4e40b46342e5d8fd8334f8a8285169bc423af83db79f3cd6bd8020b44839690"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"local-only\",[\"codex\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "18f6880cfa0ab4c6a9191122ce9795165360e0bdf85c2d4bba8f419a7e323e5d"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"local-only\",[\"codex\",\"cursor\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "5a7e8cf68edb0af19f102f29e4a6847c19d57135cba484becddb3203ec05abbd"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "8ce9eb78047a0914ce0d84b77e2ca88c8218aeac1c0c2b4716a81841640b1409"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"claude\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "d034c35bc83857eba0a06c668c505c5d6afed35438d55a8d053b5b6a82be8e4e"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"claude\",\"codex\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "58e0d2f2faff48aae1305464161bc0f864401ea809535edd59a55cea60f13a36"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"local-only\",[\"claude\",\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "2ea4c59a4f72f244d0bf83580e1b4d57c9026fc6c971164b3e0b60f74d7dfa96"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"local-only\",[\"claude\",\"cursor\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "a7af5d439773472fbff0fec64079c16b7fba975dc2d75e769f14b3ae1e9e64a7"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"cursor\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "30c1350a381f7a71fb7e0bda055e18f11d6b39e310f816133cb2b927898d68c1"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      }
+    ],
+    "[\"local-only\",[\"cursor\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "1ecae2f31a127ed418e74c6af8ff77d934d6425a16aeb8b6e770e76019e89fd6"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"cursor\",\"codex\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "60109261c41ad609bb443704928583a204b389aacff7a1f5977d400ffa8455f7"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"cursor\",\"claude\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "41bb02028f3d70de5d89ab5dbea0f93513e7cdcedc5d3d4ecb777714bd93ad52"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ],
+    "[\"local-only\",[\"cursor\",\"claude\",\"codex\"]]": [
+      {
+        "path": ".ai/.gitignore",
+        "hash": "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b"
+      },
+      {
+        "path": ".ai/README.md",
+        "hash": "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412"
+      },
+      {
+        "path": ".ai/rules/permissions.md",
+        "hash": "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2"
+      },
+      {
+        "path": ".ai/config.yaml",
+        "hash": "69ee19d8c02686ca83d69b7caccf964a37893c0c75d275e00e08f9c072675fa0"
+      },
+      {
+        "path": ".cursor/rules/ai-workflow-kit.mdc",
+        "hash": "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9"
+      },
+      {
+        "path": "CLAUDE.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      },
+      {
+        "path": "AGENTS.md",
+        "hash": "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119"
+      }
+    ]
+  },
+  "groups": {},
+  "contents": {
+    "d7aaaf6445879b4e13134c121f28e582d8ed7584efa79e254d734c3746cc7412": "# Project context\n\nAdd verified project context as it becomes useful. Start with [project permissions](rules/permissions.md) and preserve existing project instructions.\n",
+    "e9633b602963046f86a1b1f7cf125d942263e105a1a2fb0734cc91787e52b9b2": "# Project permissions\n\nRead-only inspection may proceed. Explain the scope and risks and get explicit approval before writes or external changes. Approve each step by default. Preserve existing work, verify changes, and report results briefly.\n\nFor known breaking changes, explain the impact, alternatives, and recovery. Obtain three distinct explicit confirmations. Use native safeguards for risky actions.\n",
+    "37f5b399d6e77d5503894a1ca39ab61498cd2360589f77f84dda8b2188600f29": "version: \"0.1.0\"\ntracking: tracked\nadapters: []\n",
+    "070b3c13afa3da6c4fc0ab6e3bdeabd4598976f2d86bedb0def711c417401e32": "version: \"0.1.0\"\ntracking: tracked\nadapters: [codex]\n",
+    "782268147be8a85f820f3be76a2f8a245fbda077b746fe24768340e7e6cdb119": "# Project workflow\n\nRead-only inspection may proceed. Explain the scope and risks and get explicit approval before writes or external changes. Approve each step by default. Preserve existing work, verify changes, and report results briefly.\n\nRead .ai/README.md for project context and shared rules.\n",
+    "bb8397f2d7cbff1f0d9a58686a3c00053bb54127d9cda4ed4b3f582f2ee4c7be": "version: \"0.1.0\"\ntracking: tracked\nadapters: [codex, claude]\n",
+    "54541cb349a683f665d296ba652728679a4659e3a9f7bb77b51d02b12f369daf": "version: \"0.1.0\"\ntracking: tracked\nadapters: [codex, claude, cursor]\n",
+    "729e65dc30bf1a7e1670a6e7896b8c7f84bd40e8cf296b2fa17cb8ed5a7a91f9": "---\ndescription: Project workflow and approvals\nalwaysApply: true\n---\n\n# Project workflow\n\nRead-only inspection may proceed. Explain the scope and risks and get explicit approval before writes or external changes. Approve each step by default. Preserve existing work, verify changes, and report results briefly.\n\nRead ../../.ai/README.md for project context and shared rules.\n",
+    "d32c00db6ca5f5cf85cbb61c6a5d2deeb8be3e91e2b1d66828e28fbbe288f1f9": "version: \"0.1.0\"\ntracking: tracked\nadapters: [codex, cursor]\n",
+    "f1651529168a575d70c72b3138dfb820d4c45b1cb3ad5adc3e3f5f366a817107": "version: \"0.1.0\"\ntracking: tracked\nadapters: [codex, cursor, claude]\n",
+    "8f9cc183ebc6a3826ff7c2d56ce59fcee4347023718a61078719b9580e15647e": "version: \"0.1.0\"\ntracking: tracked\nadapters: [claude]\n",
+    "24d9c07c278783bac504bf294f335bf97a6f4586fd3528ae449aca9b0c9a24f0": "version: \"0.1.0\"\ntracking: tracked\nadapters: [claude, codex]\n",
+    "730cd513fb9da0e992e7cb889a7d8242618a4a799c81be131195bbfd0a4dcfd3": "version: \"0.1.0\"\ntracking: tracked\nadapters: [claude, codex, cursor]\n",
+    "063cb734d2f6562a988d9f754df882078c8aba89bc9be9611ef96dd3f59deea4": "version: \"0.1.0\"\ntracking: tracked\nadapters: [claude, cursor]\n",
+    "c6c4f92e5cf21c24a4ee062d9e8c03d542e96255f9ba0d004c663df3e9658d66": "version: \"0.1.0\"\ntracking: tracked\nadapters: [claude, cursor, codex]\n",
+    "4c6c6be335026fddb9ce22fc626108339a6fa4f3c740cc08d70c66b0f58bef61": "version: \"0.1.0\"\ntracking: tracked\nadapters: [cursor]\n",
+    "e0c00bf2e49c9f2cbcb41db3cc388ec81e6118a68ef9ca56d6d45e0eed8ce7ea": "version: \"0.1.0\"\ntracking: tracked\nadapters: [cursor, codex]\n",
+    "e3731a9291fddd85195c2aaf4c3ea6bb21f25a938dba1e5066f2d13f11528993": "version: \"0.1.0\"\ntracking: tracked\nadapters: [cursor, codex, claude]\n",
+    "7dae07facca1aa13e78546780edce1947f2864a20265c0ca935553b9e8928fd3": "version: \"0.1.0\"\ntracking: tracked\nadapters: [cursor, claude]\n",
+    "d640f7371ee2a5744ca0af225e43def48cbaf6d04261eeebf234c2b5f7b34687": "version: \"0.1.0\"\ntracking: tracked\nadapters: [cursor, claude, codex]\n",
+    "f57d4d7f92b46bf4bb003dfc2865c8b316a5bb786811e3e0449a88ee3090c15b": "/knowledge/\n/decisions/\n/tasks/\n",
+    "eeb9e046436ab2d7e198da7de5ab45e05d6439b57c9b5042efe9385d91e27c9e": "version: \"0.1.0\"\ntracking: mixed\nadapters: []\n",
+    "bc8ae2c072fa8057fff32cf7589d165c1ce42df313ae85cf55f1c6ed58483b5a": "version: \"0.1.0\"\ntracking: mixed\nadapters: [codex]\n",
+    "20ea85c5ac4441c6137022e1d021dd69b55e41a7c1c26943f116570d4af6bbd1": "version: \"0.1.0\"\ntracking: mixed\nadapters: [codex, claude]\n",
+    "1cc0934fa5cd6f1aad1ab155fc2f26c218a6253e51596128adc36755530f26b0": "version: \"0.1.0\"\ntracking: mixed\nadapters: [codex, claude, cursor]\n",
+    "e4072da79fcacaaa4ac0334072c16c0540c684de8d2857cafff635bb49cccbab": "version: \"0.1.0\"\ntracking: mixed\nadapters: [codex, cursor]\n",
+    "6e22d746ac330c54148606deae66a6e0efad7894f15ee10199b7ba66c4a95850": "version: \"0.1.0\"\ntracking: mixed\nadapters: [codex, cursor, claude]\n",
+    "6ecf465a8671be3175935f3e8e23bef9bd8f96409aea0f32cd8358172d5c8c48": "version: \"0.1.0\"\ntracking: mixed\nadapters: [claude]\n",
+    "7c06d84c3c2d20719d1bd82e5eba9bb7687de0a607e0a31169c0b68e4ecedda2": "version: \"0.1.0\"\ntracking: mixed\nadapters: [claude, codex]\n",
+    "8dfa77652900e676497144510ac36fe519bb114ef76b6f6a68d66c0e59a75391": "version: \"0.1.0\"\ntracking: mixed\nadapters: [claude, codex, cursor]\n",
+    "137bed0bafa5c7e058c96fff7154a93491ecfb68581b29acf214926ea6b0d4da": "version: \"0.1.0\"\ntracking: mixed\nadapters: [claude, cursor]\n",
+    "f43a90fd10eed5b517a6171ef95ed8796fbfa71e32b23335619ecd340e08aab2": "version: \"0.1.0\"\ntracking: mixed\nadapters: [claude, cursor, codex]\n",
+    "5bd0a1d181039542f420740a683e52a3f12153ed93f8edab261f9b01215861c8": "version: \"0.1.0\"\ntracking: mixed\nadapters: [cursor]\n",
+    "2e4933ac47084bc46cb8028f116f84ef86ea8f314910dc3bd6ebee4275a4c0e4": "version: \"0.1.0\"\ntracking: mixed\nadapters: [cursor, codex]\n",
+    "c0cbb640100be04968f9e008b09a423a80391e6319865a9ed0183a688e2e2cb2": "version: \"0.1.0\"\ntracking: mixed\nadapters: [cursor, codex, claude]\n",
+    "de8613016f6e2e4cb0ca2f38ac0927379a5fbd4fa8aef2df8432ac54edb3c63c": "version: \"0.1.0\"\ntracking: mixed\nadapters: [cursor, claude]\n",
+    "29dc1f5601c51f1f5ee5e6bb2f3be4d7c5aa04c6d15c056472fca4e923993c0d": "version: \"0.1.0\"\ntracking: mixed\nadapters: [cursor, claude, codex]\n",
+    "cdbcae15105d6b781e620813c79c7e868740d4e9cc53ce6f5fcbbc12387adf4b": "*\n",
+    "89594fca48dc2be40d1ebbd73c21af64fc7a799f56881cfa59a719a2f016daa2": "version: \"0.1.0\"\ntracking: local-only\nadapters: []\n",
+    "d1029dbf4b5358913bf3d525191a7258c170345216d38acd5ab069b21c0465a4": "version: \"0.1.0\"\ntracking: local-only\nadapters: [codex]\n",
+    "53208ed39215801ec9a528f445b9ccf4c08805b2553bd1d78b3d1ef1eb8f75a2": "version: \"0.1.0\"\ntracking: local-only\nadapters: [codex, claude]\n",
+    "b4e40b46342e5d8fd8334f8a8285169bc423af83db79f3cd6bd8020b44839690": "version: \"0.1.0\"\ntracking: local-only\nadapters: [codex, claude, cursor]\n",
+    "18f6880cfa0ab4c6a9191122ce9795165360e0bdf85c2d4bba8f419a7e323e5d": "version: \"0.1.0\"\ntracking: local-only\nadapters: [codex, cursor]\n",
+    "5a7e8cf68edb0af19f102f29e4a6847c19d57135cba484becddb3203ec05abbd": "version: \"0.1.0\"\ntracking: local-only\nadapters: [codex, cursor, claude]\n",
+    "8ce9eb78047a0914ce0d84b77e2ca88c8218aeac1c0c2b4716a81841640b1409": "version: \"0.1.0\"\ntracking: local-only\nadapters: [claude]\n",
+    "d034c35bc83857eba0a06c668c505c5d6afed35438d55a8d053b5b6a82be8e4e": "version: \"0.1.0\"\ntracking: local-only\nadapters: [claude, codex]\n",
+    "58e0d2f2faff48aae1305464161bc0f864401ea809535edd59a55cea60f13a36": "version: \"0.1.0\"\ntracking: local-only\nadapters: [claude, codex, cursor]\n",
+    "2ea4c59a4f72f244d0bf83580e1b4d57c9026fc6c971164b3e0b60f74d7dfa96": "version: \"0.1.0\"\ntracking: local-only\nadapters: [claude, cursor]\n",
+    "a7af5d439773472fbff0fec64079c16b7fba975dc2d75e769f14b3ae1e9e64a7": "version: \"0.1.0\"\ntracking: local-only\nadapters: [claude, cursor, codex]\n",
+    "30c1350a381f7a71fb7e0bda055e18f11d6b39e310f816133cb2b927898d68c1": "version: \"0.1.0\"\ntracking: local-only\nadapters: [cursor]\n",
+    "1ecae2f31a127ed418e74c6af8ff77d934d6425a16aeb8b6e770e76019e89fd6": "version: \"0.1.0\"\ntracking: local-only\nadapters: [cursor, codex]\n",
+    "60109261c41ad609bb443704928583a204b389aacff7a1f5977d400ffa8455f7": "version: \"0.1.0\"\ntracking: local-only\nadapters: [cursor, codex, claude]\n",
+    "41bb02028f3d70de5d89ab5dbea0f93513e7cdcedc5d3d4ecb777714bd93ad52": "version: \"0.1.0\"\ntracking: local-only\nadapters: [cursor, claude]\n",
+    "69ee19d8c02686ca83d69b7caccf964a37893c0c75d275e00e08f9c072675fa0": "version: \"0.1.0\"\ntracking: local-only\nadapters: [cursor, claude, codex]\n"
+  }
+}
